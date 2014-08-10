@@ -29,3 +29,7 @@
 (fact "We can combine multiple then multiple-focus lenses."
   (-> [[1 2] [3]] (view (combine eachv eachv))) => [1 2 3]
   (-> [[1 2] [3]] (update (combine eachv eachv) inc)) => [[2 3] [4]])
+
+(fact "We can combine single then multiple-focus lenses."
+  (-> {:foo [1 2]} (view (combine (in [:foo]) eachv))) => [1 2]
+  (-> {:foo [1 2]} (update (combine (in [:foo]) eachv) inc)) => {:foo [2 3]})
