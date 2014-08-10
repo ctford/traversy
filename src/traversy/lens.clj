@@ -17,3 +17,5 @@
 (def id (->SingleFocus identity fidentity))
 
 (def each (->SingleFocus seq map))
+
+(defn in [path] (->SingleFocus #(get-in % path) #(update-in %2 path %1)))
