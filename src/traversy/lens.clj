@@ -24,6 +24,7 @@
 (def eachv (->Multiple seq mapv))
 (defn in [path] (->Single (fn [x] (get-in x path)) (fn [f x] (update-in x path f))))
 (def elements (->Multiple seq (fn [f x] (->> x (map f) set))))
+(defn only [applicable?] (->Multiple (fn [x] (filter applicable? x)) (fn [f x] (map #(if (applicable? %) (f %) %) x))))
 
 (defmulti combine (fn [outer inner] [(class outer) (class inner)]))
 (defmethod combine [traversy.lens.Single traversy.lens.Single] [outer inner]
