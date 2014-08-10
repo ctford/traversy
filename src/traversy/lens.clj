@@ -21,10 +21,12 @@
 (def eachv (lens seq mapv))
 (def elements (lens seq (fn [f x] (->> x (map f) set))))
 
+(def the-first (lens (comp list first) (fn [f [one two & others]] (concat [(f one) two] others))))
+(def the-second (lens (comp list second) (fn [f [one two & others]] (concat [one (f two)] others))))
+
 (defn fapply-in [path f x] (update-in x path f))
 (defn in [path] (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))
 
-(def all-values (lens vals (fn [f x] (->> x (map #(update-in % [1] f)) (reduce conj {})))))
 (def all-entries (lens seq (fn [f x] (->> x (map f) (reduce conj {})))))
 
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
@@ -35,3 +37,6 @@
   (lens
     (fn [x] (mapcat (partial focus inner) (focus outer x)))
     (fn [f x] (fmap outer (partial fmap inner f) x))))
+
+(def all-values (combine all-entries (in [1])))
+(def all-keys (combine all-entries (in [0])))

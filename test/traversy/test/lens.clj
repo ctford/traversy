@@ -24,6 +24,10 @@
   (-> {:foo 1 :bar 2} (collect all-values)) => (just #{1 2})
   (-> {:foo 1 :bar 2} (update all-values inc)) => {:foo 2 :bar 3})
 
+(fact "The all-keys lens focuses on the keys of a map."
+  (-> {:foo 1 :bar 2} (collect all-keys)) => (just #{:foo :bar})
+  (-> {:foo 1 :bar 2} (update all-keys {:foo :frag :bar :barp})) => {:frag 1 :barp 2})
+
 (fact "We can focus on only those items in a sequence that match a condition."
   (-> [1 2 3] (collect (only even?))) => [2]
   (-> [1 2 3] (update (only even?) inc)) => [1 3 3])
@@ -48,3 +52,12 @@
 (fact "The entries lens focuses on the entries of a map."
   (-> {:foo 3 :bar 4} (collect all-entries)) => (just #{[:foo 3] [:bar 4]})
   (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
+
+(fact "The first lens focuses on the first item of a sequence."
+  (-> [2 3 4] (view the-first)) => 2
+  (-> [2 3 4] (update the-first inc)) => [3 3 4] )
+
+(fact "The second lens focuses on the second item of a sequence."
+  (-> [2 3 4] (view the-second)) => 3
+  (-> [2 3 4] (update the-second inc)) => [2 4 4] )
+
