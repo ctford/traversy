@@ -21,6 +21,7 @@
 
 (def it (->Single identity (fn [f x] (f x))))
 (def each (->Multiple seq map))
+(def eachv (->Multiple seq mapv))
 (defn in [path] (->Single (fn [x] (get-in x path)) (fn [f x] (update-in x path f))))
 (def elements (->Multiple seq (fn [f x] (->> x (map f) set))))
 
@@ -33,4 +34,9 @@
 (defmethod combine [traversy.lens.Multiple traversy.lens.Single] [outer inner]
   (->Multiple
     (fn [x] (map (partial focus inner) (focus outer x)))
+    (fn [f x] (fmap outer (partial fmap inner f) x))))
+
+(defmethod combine [traversy.lens.Multiple traversy.lens.Multiple] [outer inner]
+  (->Multiple
+    (fn [x] (mapcat (partial focus inner) (focus outer x)))
     (fn [f x] (fmap outer (partial fmap inner f) x))))
