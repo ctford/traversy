@@ -21,8 +21,12 @@
 (def eachv (lens seq mapv))
 (def elements (lens seq (fn [f x] (->> x (map f) set))))
 
-(def the-first (lens (comp list first) (fn [f [one two & others]] (concat [(f one) two] others))))
-(def the-second (lens (comp list second) (fn [f [one two & others]] (concat [one (f two)] others))))
+(defn fnth [n f [x & xs]]
+  (if (= n 0)
+    (cons (f x) xs)
+    (cons x (fnth (dec n) f xs))))
+
+(defn xth [n] (lens (comp list #(nth % n)) (partial fnth n)))
 
 (defn fapply-in [path f x] (update-in x path f))
 (defn in [path] (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))

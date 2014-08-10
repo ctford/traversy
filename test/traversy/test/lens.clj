@@ -53,11 +53,6 @@
   (-> {:foo 3 :bar 4} (collect all-entries)) => (just #{[:foo 3] [:bar 4]})
   (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
 
-(fact "The first lens focuses on the first item of a sequence."
-  (-> [2 3 4] (view the-first)) => 2
-  (-> [2 3 4] (update the-first inc)) => [3 3 4] )
-
-(fact "The second lens focuses on the second item of a sequence."
-  (-> [2 3 4] (view the-second)) => 3
-  (-> [2 3 4] (update the-second inc)) => [2 4 4] )
-
+(fact "The xth lens focuses on the nth item of a sequence."
+  (-> [2 3 4] (view (xth 1))) => 3
+  (-> [2 3 4] (update (xth 1) inc)) => [2 4 4] )
