@@ -2,60 +2,35 @@
 
 (defprotocol Lens
   (focus [_ x])
-  (fmap [_ f x])
-  (multiplicity [_]))
+  (fmap [_ f x]))
 
-(defrecord Single
-  [focus fmap]
-  Lens
-  (focus [_ x] (focus x))
-  (fmap [_ f x] (fmap f x))
-  (multiplicity [_] :single))
+(defn lens [focus fmap]
+  (reify
+    Lens
+    (focus [_ x] (focus x))
+    (fmap [_ f x] (fmap f x))))
 
-(defrecord Multiple
-  [focus fmap]
-  Lens
-  (focus [_ x] (focus x))
-  (fmap [_ f x] (fmap f x))
-  (multiplicity [_] :multiple))
-
+(defn view-only [x lens] (first (focus lens x)))
 (defn view [x lens] (focus lens x))
 (defn update [x lens f] (fmap lens f x))
 
 (defn fapply [f x] (f x))
-(def it (->Single identity fapply))
+(def it (lens list fapply))
 
-(def each (->Multiple seq map))
-(def eachv (->Multiple seq mapv))
-(def elements (->Multiple seq (fn [f x] (->> x (map f) set))))
+(def each (lens seq map))
+(def eachv (lens seq mapv))
+(def elements (lens seq (fn [f x] (->> x (map f) set))))
 
 (defn fapply-in [path f x] (update-in x path f))
-(defn in [path] (->Single (fn [x] (get-in x path)) (partial fapply-in path)))
+(defn in [path] (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))
 
-(def all-values (->Multiple vals (fn [f x] (->> x (map #(update-in % [1] f)) (reduce conj {})))))
+(def all-values (lens vals (fn [f x] (->> x (map #(update-in % [1] f)) (reduce conj {})))))
 
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
 (defn fmap-when [applicable? f x] (map (partial fwhen applicable? f) x))
-(defn only [applicable?] (->Multiple (fn [x] (filter applicable? x)) (partial fmap-when applicable?)))
+(defn only [applicable?] (lens (fn [x] (filter applicable? x)) (partial fmap-when applicable?)))
 
-(defmulti combine (fn [outer inner] [(multiplicity outer) (multiplicity inner)]))
-(defn comp-fmap [outer inner] (fn [f x] (fmap outer (partial fmap inner f) x)))
-(defmethod combine [:single :single] [outer inner]
-  (->Single
-    (fn [x] (focus inner (focus outer x)))
-    (comp-fmap outer inner)))
-
-(defmethod combine [:single :multiple] [outer inner]
-  (->Multiple
-    (fn [x] (focus inner (focus outer x)))
-    (comp-fmap outer inner)))
-
-(defmethod combine [:multiple :single] [outer inner]
-  (->Multiple
-    (fn [x] (map (partial focus inner) (focus outer x)))
-    (comp-fmap outer inner)))
-
-(defmethod combine [:multiple :multiple] [outer inner]
-  (->Multiple
+(defn combine [outer inner]
+  (lens
     (fn [x] (mapcat (partial focus inner) (focus outer x)))
-    (comp-fmap outer inner)))
+    (fn [f x] (fmap outer (partial fmap inner f) x))))
