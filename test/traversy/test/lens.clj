@@ -17,3 +17,7 @@
 (fact "The elements lens focuses on each element in a set."
   (-> #{1 2 3} (view elements)) => (just #{1 2 3})
   (-> #{1 2 3} (update elements inc)) => #{2 3 4})
+
+(fact "We can combine single-focus lenses."
+  (-> {:foo {:bar 9}} (view (combine (in [:foo]) (in [:bar])))) => 9
+  (-> {:foo {:bar 9}} (update (combine (in [:foo]) (in [:bar])) inc)) => {:foo {:bar 10}})

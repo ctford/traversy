@@ -17,3 +17,8 @@
 (def each (->SingleFocus seq map))
 (defn in [path] (->SingleFocus (fn [x] (get-in x path)) (fn [f x] (update-in x path f))))
 (def elements (->SingleFocus seq (fn [f x] (->> x seq (map f) set))))
+
+(defn combine [outer inner]
+  (->SingleFocus
+    (fn [x] (focus inner (focus outer x)))
+    (fn [f x] (fmap outer #(fmap inner f %) x))))
