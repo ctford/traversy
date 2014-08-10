@@ -16,7 +16,7 @@
 (def it (->SingleFocus identity (fn [f x] (f x))))
 (def each (->SingleFocus seq map))
 (defn in [path] (->SingleFocus (fn [x] (get-in x path)) (fn [f x] (update-in x path f))))
-(def elements (->SingleFocus seq (fn [f x] (->> x seq (map f) set))))
+(def elements (->SingleFocus seq (fn [f x] (->> x (map f) set))))
 
 (defn combine [outer inner]
   (->SingleFocus
