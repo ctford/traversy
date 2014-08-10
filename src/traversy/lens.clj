@@ -14,7 +14,7 @@
 (defn update [x lens f] (fmap lens f x))
 
 (defn fidentity [f x] (f x))
-(def id (->SingleFocus identity fidentity))
+(def it (->SingleFocus identity fidentity))
 
 (def each (->SingleFocus seq map))
 
