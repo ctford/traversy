@@ -19,12 +19,19 @@
 (defn view [x lens] (focus lens x))
 (defn update [x lens f] (fmap lens f x))
 
-(def it (->Single identity (fn [f x] (f x))))
+(defn fapply [f x] (f x))
+(def it (->Single identity fapply))
+
 (def each (->Multiple seq map))
 (def eachv (->Multiple seq mapv))
-(defn in [path] (->Single (fn [x] (get-in x path)) (fn [f x] (update-in x path f))))
 (def elements (->Multiple seq (fn [f x] (->> x (map f) set))))
-(defn only [applicable?] (->Multiple (fn [x] (filter applicable? x)) (fn [f x] (map #(if (applicable? %) (f %) %) x))))
+
+(defn fapply-in [path f x] (update-in x path f))
+(defn in [path] (->Single (fn [x] (get-in x path)) (partial fapply-in path)))
+
+(defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
+(defn fmap-when [applicable? f x] (map (partial fwhen applicable? f) x))
+(defn only [applicable?] (->Multiple (fn [x] (filter applicable? x)) (partial fmap-when applicable?)))
 
 (defmulti combine (fn [outer inner] [(class outer) (class inner)]))
 (defmethod combine [traversy.lens.Single traversy.lens.Single] [outer inner]
