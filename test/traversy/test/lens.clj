@@ -13,3 +13,7 @@
 (fact "The in lens focuses into a map based on a path."
   (-> {:foo 1} (view (in [:foo]))) => 1
   (-> {:foo 1} (update (in [:foo]) inc)) => {:foo 2})
+
+(fact "The elements lens focuses on each element in a set."
+  (-> #{1 2 3} (view elements)) => (just #{1 2 3})
+  (-> #{1 2 3} (update elements inc)) => #{2 3 4})

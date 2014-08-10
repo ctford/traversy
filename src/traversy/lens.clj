@@ -19,3 +19,5 @@
 (def each (->SingleFocus seq map))
 
 (defn in [path] (->SingleFocus #(get-in % path) #(update-in %2 path %1)))
+
+(def elements (->SingleFocus seq #(->> %2 seq (map %1) set)))
