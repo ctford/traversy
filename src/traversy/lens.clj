@@ -36,22 +36,23 @@
 (defn only [applicable?] (->Multiple (fn [x] (filter applicable? x)) (partial fmap-when applicable?)))
 
 (defmulti combine (fn [outer inner] [(class outer) (class inner)]))
+(defn comp-fmap [outer inner] (fn [f x] (fmap outer (partial fmap inner f) x)))
 (defmethod combine [traversy.lens.Single traversy.lens.Single] [outer inner]
   (->Single
     (fn [x] (focus inner (focus outer x)))
-    (fn [f x] (fmap outer (partial fmap inner f) x))))
+    (comp-fmap outer inner)))
 
 (defmethod combine [traversy.lens.Single traversy.lens.Multiple] [outer inner]
   (->Multiple
     (fn [x] (focus inner (focus outer x)))
-    (fn [f x] (fmap outer (partial fmap inner f) x))))
+    (comp-fmap outer inner)))
 
 (defmethod combine [traversy.lens.Multiple traversy.lens.Single] [outer inner]
   (->Multiple
     (fn [x] (map (partial focus inner) (focus outer x)))
-    (fn [f x] (fmap outer (partial fmap inner f) x))))
+    (comp-fmap outer inner)))
 
 (defmethod combine [traversy.lens.Multiple traversy.lens.Multiple] [outer inner]
   (->Multiple
     (fn [x] (mapcat (partial focus inner) (focus outer x)))
-    (fn [f x] (fmap outer (partial fmap inner f) x))))
+    (comp-fmap outer inner)))
