@@ -12,3 +12,4 @@ See the tests.
 * Should the construction of lenses be from get and set rather than get and update?
 * Should the representation of lenses be function-based a la Haskell?
 * Should we admit lenses like `only` that don't obey the Traversal laws?
+* How should we handle put for multilenses?
