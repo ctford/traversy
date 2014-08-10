@@ -29,6 +29,8 @@
 (defn fapply-in [path f x] (update-in x path f))
 (defn in [path] (->Single (fn [x] (get-in x path)) (partial fapply-in path)))
 
+(def all-values (->Multiple vals (fn [f x] (->> x (map #(update-in % [1] f)) (reduce conj {})))))
+
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
 (defn fmap-when [applicable? f x] (map (partial fwhen applicable? f) x))
 (defn only [applicable?] (->Multiple (fn [x] (filter applicable? x)) (partial fmap-when applicable?)))

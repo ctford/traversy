@@ -18,6 +18,10 @@
   (-> #{1 2 3} (view elements)) => (just #{1 2 3})
   (-> #{1 2 3} (update elements inc)) => #{2 3 4})
 
+(fact "The all-values lens focuses on the values of a map."
+  (-> {:foo 1 :bar 2} (view all-values)) => (just #{1 2})
+  (-> {:foo 1 :bar 2} (update all-values inc)) => {:foo 2 :bar 3})
+
 (fact "We can focus on only those items in a sequence that match a condition."
   (-> [1 2 3] (view (only even?))) => [2]
   (-> [1 2 3] (update (only even?) inc)) => [1 3 3])
