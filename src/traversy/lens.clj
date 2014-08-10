@@ -26,8 +26,13 @@
 (def elements (->Multiple seq (fn [f x] (->> x (map f) set))))
 
 (defmulti combine (fn [outer inner] [(class outer) (class inner)]))
-(defmethod combine :default [outer inner]
+(defmethod combine [traversy.lens.Single traversy.lens.Single] [outer inner]
   (->Single
+    (fn [x] (focus inner (focus outer x)))
+    (fn [f x] (fmap outer #(fmap inner f %) x))))
+
+(defmethod combine [traversy.lens.Single traversy.lens.Multiple] [outer inner]
+  (->Multiple
     (fn [x] (focus inner (focus outer x)))
     (fn [f x] (fmap outer #(fmap inner f %) x))))
 
