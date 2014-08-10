@@ -1,20 +1,23 @@
 (ns traversy.lens)
 
 (defprotocol Lens
-  (focus [this x])
-  (fmap [this f x]))
+  (focus [_ x])
+  (fmap [_ f x])
+  (multiplicity [_]))
 
 (defrecord Single
   [focus fmap]
   Lens
   (focus [_ x] (focus x))
-  (fmap [_ f x] (fmap f x)))
+  (fmap [_ f x] (fmap f x))
+  (multiplicity [_] :single))
 
 (defrecord Multiple
   [focus fmap]
   Lens
   (focus [_ x] (focus x))
-  (fmap [_ f x] (fmap f x)))
+  (fmap [_ f x] (fmap f x))
+  (multiplicity [_] :multiple))
 
 (defn view [x lens] (focus lens x))
 (defn update [x lens f] (fmap lens f x))
@@ -35,24 +38,24 @@
 (defn fmap-when [applicable? f x] (map (partial fwhen applicable? f) x))
 (defn only [applicable?] (->Multiple (fn [x] (filter applicable? x)) (partial fmap-when applicable?)))
 
-(defmulti combine (fn [outer inner] [(class outer) (class inner)]))
+(defmulti combine (fn [outer inner] [(multiplicity outer) (multiplicity inner)]))
 (defn comp-fmap [outer inner] (fn [f x] (fmap outer (partial fmap inner f) x)))
-(defmethod combine [traversy.lens.Single traversy.lens.Single] [outer inner]
+(defmethod combine [:single :single] [outer inner]
   (->Single
     (fn [x] (focus inner (focus outer x)))
     (comp-fmap outer inner)))
 
-(defmethod combine [traversy.lens.Single traversy.lens.Multiple] [outer inner]
+(defmethod combine [:single :multiple] [outer inner]
   (->Multiple
     (fn [x] (focus inner (focus outer x)))
     (comp-fmap outer inner)))
 
-(defmethod combine [traversy.lens.Multiple traversy.lens.Single] [outer inner]
+(defmethod combine [:multiple :single] [outer inner]
   (->Multiple
     (fn [x] (map (partial focus inner) (focus outer x)))
     (comp-fmap outer inner)))
 
-(defmethod combine [traversy.lens.Multiple traversy.lens.Multiple] [outer inner]
+(defmethod combine [:multiple :multiple] [outer inner]
   (->Multiple
     (fn [x] (mapcat (partial focus inner) (focus outer x)))
     (comp-fmap outer inner)))
