@@ -22,7 +22,7 @@
 (def elements (lens seq (fn [f x] (->> x (map f) set))))
 
 (defn fnth [n f [x & xs]]
-  (if (= n 0)
+  (if (zero? n)
     (cons (f x) xs)
     (cons x (fnth (dec n) f xs))))
 
