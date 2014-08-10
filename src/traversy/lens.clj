@@ -10,8 +10,8 @@
     (focus [_ x] (focus x))
     (fmap [_ f x] (fmap f x))))
 
-(defn view [x lens] (first (focus lens x)))
 (defn collect [x lens] (focus lens x))
+(defn view [x lens] (first (collect x lens)))
 (defn update [x lens f] (fmap lens f x))
 
 (defn fapply [f x] (f x))
