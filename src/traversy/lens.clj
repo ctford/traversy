@@ -25,6 +25,7 @@
 (defn in [path] (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))
 
 (def all-values (lens vals (fn [f x] (->> x (map #(update-in % [1] f)) (reduce conj {})))))
+(def all-entries (lens seq (fn [f x] (->> x (map f) (reduce conj {})))))
 
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
 (defn fmap-when [applicable? f x] (map (partial fwhen applicable? f) x))

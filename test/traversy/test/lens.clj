@@ -44,3 +44,7 @@
 (fact "We can combine single then multiple-focus lenses."
   (-> {:foo [1 2]} (collect (combine (in [:foo]) eachv))) => [1 2]
   (-> {:foo [1 2]} (update (combine (in [:foo]) eachv) inc)) => {:foo [2 3]})
+
+(fact "The entries lens focuses on the entries of a map."
+  (-> {:foo 3 :bar 4} (collect all-entries)) => (just #{[:foo 3] [:bar 4]})
+  (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
