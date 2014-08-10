@@ -29,12 +29,12 @@
 (defmethod combine [traversy.lens.Single traversy.lens.Single] [outer inner]
   (->Single
     (fn [x] (focus inner (focus outer x)))
-    (fn [f x] (fmap outer #(fmap inner f %) x))))
+    (fn [f x] (fmap outer (partial fmap inner f) x))))
 
 (defmethod combine [traversy.lens.Single traversy.lens.Multiple] [outer inner]
   (->Multiple
     (fn [x] (focus inner (focus outer x)))
-    (fn [f x] (fmap outer #(fmap inner f %) x))))
+    (fn [f x] (fmap outer (partial fmap inner f) x))))
 
 (defmethod combine [traversy.lens.Multiple traversy.lens.Single] [outer inner]
   (->Multiple
