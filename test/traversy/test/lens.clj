@@ -57,3 +57,8 @@
 (fact "We can combine single-focus lenses with multiple-focus lenses."
   (-> {:foo [1 2]} (collect (combine (in [:foo]) eachv))) => [1 2]
   (-> {:foo [1 2]} (update (combine (in [:foo]) eachv) inc)) => {:foo [2 3]})
+
+(fact "We can combine n lenses with '+>'."
+  (-> {:foo {:bar {:baz 9}}} (view (+> (in [:foo]) (in [:bar]) (in [:baz])))) => 9
+  (-> {:foo {:bar {:baz 9}}} (collect (+> (in [:foo]) (in [:bar]) (in [:baz])))) => [9]
+  (-> {:foo {:bar {:baz 9}}} (update (+> (in [:foo]) (in [:bar]) (in [:baz])) inc)) => {:foo {:bar {:baz 10}}})

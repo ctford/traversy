@@ -39,8 +39,9 @@
   (lens
     (fn [x] (mapcat (partial focus inner) (focus outer x)))
     (fn [f x] (fmap outer (partial fmap inner f) x))))
+(defn +> [& ls] (reduce combine it ls))
 
 (defn map-m [f x] (->> x (map f) (reduce conj {})))
 (def all-entries (lens seq map-m))
-(def all-values (combine all-entries (in [1])))
-(def all-keys (combine all-entries (in [0])))
+(def all-values (+> all-entries (in [1])))
+(def all-keys (+> all-entries (in [0])))
