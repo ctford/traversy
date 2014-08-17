@@ -24,9 +24,14 @@
   "Apply f to the foci of x, as specified by lens."
   (fmap lens f x))
 
+(defn put
+  "When supplied as the f to update, sets all the foci to x."
+  [x]
+  (constantly x))
+
 (def delete
   "When supplied as the f to update, deletes the foci of the lens."
-  (constantly nil))
+  (put nil))
 
 (defn fapply [f x] (f x))
 (def it

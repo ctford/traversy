@@ -45,6 +45,11 @@
   (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) delete)) => {:baz 5}
   (-> {:foo 3 :bar 4 :baz 5} (update all-entries delete)) => {})
 
+(fact "put sets the value at all the foci of a lens."
+  (-> [1 2 3] (update (only even?) (put 7))) => [1 7 3]
+  (-> #{1 2 3} (update each (put 7))) => #{7}
+  (-> {:foo 3 :bar 4} (update (select-entries [:foo]) (put [:baz 7]) )) => {:bar 4 :baz 7})
+
 (fact "The items lenses support deletion."
   (-> [1 2 3] (update each delete)) => [])
 
