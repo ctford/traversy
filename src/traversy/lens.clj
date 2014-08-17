@@ -47,6 +47,7 @@
 (def all-values (+> all-entries (in [1])))
 (def all-keys (+> all-entries (in [0])))
 (defn select-entries [ks]
-  (lens
-    #(-> % (select-keys ks) seq)
-    (fn [f x] (map-m (partial fwhen (comp (set ks) first) f) x))))
+  (let [applicable? (fn [[k v]] ((set ks) k))]
+    (lens
+      #(-> % (select-keys ks) seq)
+      (fn [f x] (map-m (partial fwhen applicable? f) x)))))
