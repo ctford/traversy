@@ -50,8 +50,4 @@
 (def all-entries each)
 (def all-values (+> all-entries (in [1])))
 (def all-keys (+> all-entries (in [0])))
-(defn select-entries [ks]
-  (let [applicable? (fn [[k v]] ((set ks) k))]
-    (lens
-      #(-> % (select-keys ks) seq)
-      (partial fsome applicable?))))
+(defn select-entries [ks] (only (fn [[k v]] ((set ks) k))))
