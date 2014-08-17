@@ -44,9 +44,10 @@
   (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) delete)) => {:baz 5}
   (-> {:foo 3 :bar 4 :baz 5} (update all-entries delete)) => {})
 
-(fact "The each lenses support deletion."
+(fact "The items lenses support deletion."
   (-> [1 2 3] (update each delete)) => []
-  (-> [1 2 3] (update eachv delete)) => [])
+  (-> [1 2 3] (update eachv delete)) => []
+  (-> [1 2 3] (update (only even?) delete)) => [1 3])
 
 (fact "The 'xth' lens focuses on the nth item of a sequence."
   (-> [2 3 4] (view (xth 1))) => 3

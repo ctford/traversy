@@ -36,7 +36,7 @@
 
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
 (defn fsome [applicable? f x] (map (partial fwhen applicable? f) x))
-(defn only [applicable?] (lens (partial filter applicable?) (partial fsome applicable?)))
+(defn only [applicable?] (lens (partial filter applicable?) #(->> %2 (fsome applicable? %1) no-nils)))
 
 (defn combine [outer inner]
   (lens
