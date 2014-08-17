@@ -39,7 +39,7 @@
 
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
 (defn fsome [applicable? f x] (map-conj (partial fwhen applicable? f) x))
-(defn only [applicable?] (lens (partial filter applicable?) #(->> %2 (fsome applicable? %1))))
+(defn only [applicable?] (lens (partial filter applicable?) (partial fsome applicable?)))
 
 (defn combine [outer inner]
   (lens
@@ -47,11 +47,11 @@
     (fn [f x] (fmap outer (partial fmap inner f) x))))
 (defn +> [& ls] (reduce combine it ls))
 
-(def all-entries (lens seq map-conj))
+(def all-entries each)
 (def all-values (+> all-entries (in [1])))
 (def all-keys (+> all-entries (in [0])))
 (defn select-entries [ks]
   (let [applicable? (fn [[k v]] ((set ks) k))]
     (lens
       #(-> % (select-keys ks) seq)
-      (fn [f x] (map-conj (partial fwhen applicable? f) x)))))
+      (partial fsome applicable?))))
