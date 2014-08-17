@@ -18,8 +18,9 @@
 (defn fapply [f x] (f x))
 (def it (lens list fapply))
 
-(def each (lens seq map))
-(def eachv (lens seq mapv))
+(def no-nils (partial filter (complement nil?)))
+(def each (lens seq (comp no-nils map)))
+(def eachv (lens seq (comp no-nils mapv)))
 
 (defn map-s [f x] (->> x (map f) set))
 (def elements (lens seq map-s))
