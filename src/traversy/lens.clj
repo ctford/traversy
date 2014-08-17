@@ -13,6 +13,7 @@
 (defn collect [x lens] (focus lens x))
 (defn view [x lens] (first (collect x lens)))
 (defn update [x lens f] (fmap lens f x))
+(def delete (constantly nil))
 
 (defn fapply [f x] (f x))
 (def it (lens list fapply))

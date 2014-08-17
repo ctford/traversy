@@ -40,6 +40,10 @@
   (-> {:foo 3 :bar 4 :baz 5} (collect (select-entries [:foo :bar]))) => (just #{[:foo 3] [:bar 4]})
   (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) (fn [[k v]] [v k]))) => {3 :foo 4 :bar :baz 5})
 
+(fact "The entries lenses support deletion."
+  (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) delete)) => {:baz 5}
+  (-> {:foo 3 :bar 4 :baz 5} (update all-entries delete)) => {})
+
 (fact "The 'xth' lens focuses on the nth item of a sequence."
   (-> [2 3 4] (view (xth 1))) => 3
   (-> [2 3 4] (collect (xth 1))) => [3]
