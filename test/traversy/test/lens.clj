@@ -30,7 +30,8 @@
 
 (fact "The 'only' lens focuses on the items in a sequence matching a condition."
   (-> [1 2 3] (collect (only even?))) => [2]
-  (-> [1 2 3] (update (only even?) inc)) => [1 3 3])
+  (-> [1 2 3] (update (only even?) inc)) => [1 3 3]
+  (-> #{1 2 3} (update (only even?) inc)) => #{1 3})
 
 (fact "The 'entries' lens focuses on the entries of a map."
   (-> {:foo 3 :bar 4} (collect all-entries)) => (just #{[:foo 3] [:bar 4]})
@@ -46,7 +47,9 @@
 
 (fact "The items lenses support deletion."
   (-> [1 2 3] (update each delete)) => []
-  (-> [1 2 3] (update eachv delete)) => []
+  (-> [1 2 3] (update eachv delete)) => [])
+
+(fact "The 'only' lense supports deletion."
   (-> [1 2 3] (update (only even?) delete)) => [1 3])
 
 (fact "The 'elements' lens supports deletion."

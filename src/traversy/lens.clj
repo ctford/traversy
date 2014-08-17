@@ -18,12 +18,18 @@
 (defn fapply [f x] (f x))
 (def it (lens list fapply))
 
-(def no-nils (partial filter (complement nil?)))
-(def each (lens seq (comp no-nils map)))
-(def eachv (lens seq (comp no-nils mapv)))
+(defn zero [x]
+  (cond
+    (vector? x) []
+    (set? x) #{}
+    (map? x) {}
+    :otherwise '()))
 
-(defn map-s [f x] (->> x (map f) no-nils set))
-(def elements (lens seq map-s))
+(defn map-conj [f x] (->> x (map f) (filter (complement nil?)) (reduce conj (zero x))))
+
+(def each (lens seq map-conj))
+(def eachv each)
+(def elements (lens seq map-conj))
 
 (defn fnth [n f [x & xs]]
   (if (zero? n)
@@ -35,8 +41,8 @@
 (defn in [path] (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))
 
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
-(defn fsome [applicable? f x] (map (partial fwhen applicable? f) x))
-(defn only [applicable?] (lens (partial filter applicable?) #(->> %2 (fsome applicable? %1) no-nils)))
+(defn fsome [applicable? f x] (map-conj (partial fwhen applicable? f) x))
+(defn only [applicable?] (lens (partial filter applicable?) #(->> %2 (fsome applicable? %1))))
 
 (defn combine [outer inner]
   (lens
@@ -44,12 +50,11 @@
     (fn [f x] (fmap outer (partial fmap inner f) x))))
 (defn +> [& ls] (reduce combine it ls))
 
-(defn map-m [f x] (->> x (map f) (reduce conj {})))
-(def all-entries (lens seq map-m))
+(def all-entries (lens seq map-conj))
 (def all-values (+> all-entries (in [1])))
 (def all-keys (+> all-entries (in [0])))
 (defn select-entries [ks]
   (let [applicable? (fn [[k v]] ((set ks) k))]
     (lens
       #(-> % (select-keys ks) seq)
-      (fn [f x] (map-m (partial fwhen applicable? f) x)))))
+      (fn [f x] (map-conj (partial fwhen applicable? f) x)))))
