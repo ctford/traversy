@@ -22,7 +22,7 @@
 (def each (lens seq (comp no-nils map)))
 (def eachv (lens seq (comp no-nils mapv)))
 
-(defn map-s [f x] (->> x (map f) set))
+(defn map-s [f x] (->> x (map f) no-nils set))
 (def elements (lens seq map-s))
 
 (defn fnth [n f [x & xs]]

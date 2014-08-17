@@ -49,6 +49,9 @@
   (-> [1 2 3] (update eachv delete)) => []
   (-> [1 2 3] (update (only even?) delete)) => [1 3])
 
+(fact "The 'elements' lens supports deletion."
+  (-> #{1 2 3} (update elements delete)) => #{})
+
 (fact "The 'xth' lens focuses on the nth item of a sequence."
   (-> [2 3 4] (view (xth 1))) => 3
   (-> [2 3 4] (collect (xth 1))) => [3]
