@@ -1,28 +1,24 @@
 (ns traversy.lens)
 
-(defprotocol Lens
-  (focus [_ x])
-  (fmap [_ f x]))
-
 (defn lens
   "Construct a lens from a focus :: x -> seq and an fmap :: f x -> x."
   [focus fmap]
-  (reify
-    Lens
-    (focus [_ x] (focus x))
-    (fmap [_ f x] (fmap f x))))
+  {:focus focus :fmap fmap})
 
 (defn collect
   "Return a seq of the lens' foci."
-  [x lens] (focus lens x))
+  [x lens]
+  ((:focus lens) x))
 
-(defn view [x lens]
+(defn view
   "Return a single focus, ignoring any subsequent foci."
+  [x lens]
   (first (collect x lens)))
 
-(defn update [x lens f]
+(defn update
   "Apply f to the foci of x, as specified by lens."
-  (fmap lens f x))
+  [x lens f]
+  ((:fmap lens) f x))
 
 (defn put
   "When supplied as the f to update, sets all the foci to x."
@@ -81,8 +77,8 @@
   "Combine two lenses to form a new lens."
   [outer inner]
   (lens
-    (fn [x] (mapcat (partial focus inner) (focus outer x)))
-    (fn [f x] (fmap outer (partial fmap inner f) x))))
+    (fn [x] (mapcat #(collect % inner) (collect x outer)))
+    (fn [f x] (update x outer #(update % inner f)))))
 
 (defn +>
   "Combine lenses to form a new lens."
