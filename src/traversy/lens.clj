@@ -34,6 +34,7 @@
   (put nil))
 
 (defn fapply [f x] (f x))
+
 (def it
   "The identity lens."
   (lens list fapply))
@@ -46,6 +47,7 @@
     :otherwise '()))
 
 (defn map-conj [f x] (->> x (map f) (filter (complement nil?)) (reduce conj (zero x))))
+
 (def each
   "A lens from collection -> item."
   (lens seq map-conj))
@@ -54,12 +56,14 @@
   (if (zero? n)
     (cons (f x) xs)
     (cons x (fnth (dec n) f xs))))
+
 (defn xth
   "A lens from collection -> nth item."
   [n]
   (lens (comp list #(nth % n)) (partial fnth n)))
 
 (defn fapply-in [path f x] (update-in x path f))
+
 (defn in
   "A lens from map -> value at path."
   [path]
@@ -67,6 +71,7 @@
 
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
 (defn fsome [applicable? f x] (map-conj (partial fwhen applicable? f) x))
+
 (defn only
   "A lens from collection -> applicable items."
   [applicable?]
@@ -78,6 +83,7 @@
   (lens
     (fn [x] (mapcat (partial focus inner) (focus outer x)))
     (fn [f x] (fmap outer (partial fmap inner f) x))))
+
 (defn +>
   "Combine lenses to form a new lens."
   [& lenses]
