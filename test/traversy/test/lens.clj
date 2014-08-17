@@ -16,9 +16,9 @@
   (-> {:foo 1} (collect (in [:foo]))) => [1]
   (-> {:foo 1} (update (in [:foo]) inc)) => {:foo 2})
 
-(fact "The 'elements' lens focuses on each element in a set."
-  (-> #{1 2 3} (collect elements)) => (just #{1 2 3})
-  (-> #{1 2 3} (update elements inc)) => #{2 3 4})
+(fact "The 'each' lens focuses on each element in a set."
+  (-> #{1 2 3} (collect each)) => (just #{1 2 3})
+  (-> #{1 2 3} (update each inc)) => #{2 3 4})
 
 (fact "The 'all-values' lens focuses on the values of a map."
   (-> {:foo 1 :bar 2} (collect all-values)) => (just #{1 2})
@@ -46,14 +46,13 @@
   (-> {:foo 3 :bar 4 :baz 5} (update all-entries delete)) => {})
 
 (fact "The items lenses support deletion."
-  (-> [1 2 3] (update each delete)) => []
-  (-> [1 2 3] (update eachv delete)) => [])
+  (-> [1 2 3] (update each delete)) => [])
 
 (fact "The 'only' lense supports deletion."
   (-> [1 2 3] (update (only even?) delete)) => [1 3])
 
-(fact "The 'elements' lens supports deletion."
-  (-> #{1 2 3} (update elements delete)) => #{})
+(fact "The 'each' lens supports deletion on sets."
+  (-> #{1 2 3} (update each delete)) => #{})
 
 (fact "The 'xth' lens focuses on the nth item of a sequence."
   (-> [2 3 4] (view (xth 1))) => 3
@@ -70,12 +69,12 @@
   (-> [{:foo 1} {:foo 2}] (update (combine each (in [:foo])) inc)) => [{:foo 2} {:foo 3}])
 
 (fact "We can 'combine' multiple-focus lenses with multiple-focus lenses."
-  (-> [[1 2] [3]] (collect (combine eachv eachv))) => [1 2 3]
-  (-> [[1 2] [3]] (update (combine eachv eachv) inc)) => [[2 3] [4]])
+  (-> [[1 2] [3]] (collect (combine each each))) => [1 2 3]
+  (-> [[1 2] [3]] (update (combine each each) inc)) => [[2 3] [4]])
 
 (fact "We can combine single-focus lenses with multiple-focus lenses."
-  (-> {:foo [1 2]} (collect (combine (in [:foo]) eachv))) => [1 2]
-  (-> {:foo [1 2]} (update (combine (in [:foo]) eachv) inc)) => {:foo [2 3]})
+  (-> {:foo [1 2]} (collect (combine (in [:foo]) each))) => [1 2]
+  (-> {:foo [1 2]} (update (combine (in [:foo]) each) inc)) => {:foo [2 3]})
 
 (fact "We can combine n lenses with '+>'."
   (-> {:foo {:bar {:baz 9}}} (view (+> (in [:foo]) (in [:bar]) (in [:baz])))) => 9

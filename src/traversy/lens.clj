@@ -26,10 +26,7 @@
     :otherwise '()))
 
 (defn map-conj [f x] (->> x (map f) (filter (complement nil?)) (reduce conj (zero x))))
-
 (def each (lens seq map-conj))
-(def eachv each)
-(def elements (lens seq map-conj))
 
 (defn fnth [n f [x & xs]]
   (if (zero? n)
