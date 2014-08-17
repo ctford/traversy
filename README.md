@@ -25,6 +25,11 @@ Yes. Lenses interpret a `nil` returned from an update as a deletion.
 
 This also violates sequential composition.
 
+## Will updates preserve the structure of the target?
+
+Yes. Whether you focus on a map, a set, a vector or a sequence, the structure of the target will remain
+the same after an update. This is due to use of `conj` internally.
+
 ## Can I compose these Lenses with ordinary function composition?
 
 No. Unlike Haskell Lenses, these are not represented as functions. You can, however, use `combine`
