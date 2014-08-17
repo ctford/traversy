@@ -32,6 +32,7 @@
 (defn fapply-in [path f x] (update-in x path f))
 (defn in [path] (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))
 
+(defn fif [applicable? f x] (if (applicable? x) (f x) x))
 (defn fwhen [applicable? f x] (map (fn [e] (if (applicable? e) (f e) e)) x))
 (defn only [applicable?] (lens (partial filter applicable?) (partial fwhen applicable?)))
 
@@ -45,3 +46,7 @@
 (def all-entries (lens seq map-m))
 (def all-values (+> all-entries (in [1])))
 (def all-keys (+> all-entries (in [0])))
+(defn select-entries [ks]
+  (lens
+    #(-> % (select-keys ks) seq)
+    (fn [f x] (map-m (partial fif (comp (set ks) first) f) x))))
