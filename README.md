@@ -6,7 +6,7 @@ An experimental encoding of multilenses in Clojure.
 
 # Usage
 
-See the tests.
+See the [tests](test/traversy/test/lens.clj).
 
 # FAQs
 
