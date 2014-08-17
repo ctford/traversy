@@ -38,3 +38,7 @@ and the variadic `+>`.
 ## How do I run the tests?
 
 `lein midje`.
+
+## Is this stable enough to use in production?
+
+No. The design is still in flux, and the API may change radically.
