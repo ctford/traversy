@@ -34,3 +34,7 @@ the same after an update. This is due to use of `conj` internally.
 
 No. Unlike Haskell Lenses, these are not represented as functions. You can, however, use `combine`
 and the variadic `+>`.
+
+## How do I run the tests?
+
+`lein midje`.
