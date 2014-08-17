@@ -1,16 +1,31 @@
 # Traversy
 
-An experimental encoding of lenses and multilenses.
+[![Build Status](https://travis-ci.org/ctford/traversy.png)](https://travis-ci.org/ctford/traversy)
+
+An experimental encoding of multilenses in Clojure.
 
 # Usage
 
 See the tests.
 
-# Design dilemmas
+# FAQs
 
-* How should we handle composing viewing through multilenses (Traversals)?
-* Should the construction of lenses be from get and set rather than get and update?
-* Should the representation of lenses be function-based a la Haskell?
-* Should we admit lenses like `only` that don't obey the Traversal laws?
-* How should we handle put for multilenses?
-* Is it possible to reasonably support filtering on update?
+## Aren't these just degenerate Lenses?
+
+Yes! In fact, they're [Traversals](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html).
+
+## So they obey the [Traversal Laws](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html#t:Traversal)?
+
+Not entirely. Lenses with unstable foci like `only` violate sequential composition
+i.e. `(update x l (comp f2 f1))` is not always equivalent to `(update (update x l f1) l f2)`.
+
+## Can you use Lenses to filter?
+
+Yes. Lenses interpret a `nil` returned from an update as a deletion.
+
+This also violates sequential composition.
+
+## Can I compose these Lenses with ordinary function composition?
+
+No. Unlike Haskell Lenses, these are not represented as functions. You can, however, use `combine`
+and the variadic `+>`.
