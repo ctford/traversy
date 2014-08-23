@@ -40,7 +40,7 @@
     (vector? x) []
     (set? x) #{}
     (map? x) {}
-    :otherwise '()))
+    :otherwise []))
 
 (defn map-conj [f x] (->> x (map f) (filter (complement nil?)) (reduce conj (zero x))))
 

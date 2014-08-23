@@ -7,18 +7,27 @@
   (-> 9 (collect it)) => [9]
   (-> 9 (update it inc)) => 10)
 
-(fact "The 'each' lens focuses on each item in a sequence."
-  (-> [1 2 3] (collect each)) => [1 2 3]
-  (-> [1 2 3] (update each inc)) => [2 3 4])
-
 (fact "The 'in' lens focuses into a map based on a path."
   (-> {:foo 1} (view (in [:foo]))) => 1
   (-> {:foo 1} (collect (in [:foo]))) => [1]
   (-> {:foo 1} (update (in [:foo]) inc)) => {:foo 2})
 
+(fact "The 'each' lens focuses on each item in a sequence."
+  (-> [1 2 3] (collect each)) => [1 2 3]
+  (-> [1 2 3] (update each inc)) => #(and (= % [2 3 4]) vector?)
+  (-> [1 2 3] seq (update each inc)) => #(and (= % [2 3 4]) seq?))
+
 (fact "The 'each' lens focuses on each element in a set."
   (-> #{1 2 3} (collect each)) => (just #{1 2 3})
   (-> #{1 2 3} (update each inc)) => #{2 3 4})
+
+(fact "The 'each' lens focuses on the entries of a map."
+  (-> {:foo 3 :bar 4} (collect all-entries)) => (just #{[:foo 3] [:bar 4]})
+  (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
+
+(fact "The 'all-entries' lens focuses on the entries of a map."
+  (-> {:foo 3 :bar 4} (collect all-entries)) => (just #{[:foo 3] [:bar 4]})
+  (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
 
 (fact "The 'all-values' lens focuses on the values of a map."
   (-> {:foo 1 :bar 2} (collect all-values)) => (just #{1 2})
@@ -33,9 +42,6 @@
   (-> [1 2 3] (update (only even?) inc)) => [1 3 3]
   (-> #{1 2 3} (update (only even?) inc)) => #{1 3})
 
-(fact "The 'entries' lens focuses on the entries of a map."
-  (-> {:foo 3 :bar 4} (collect all-entries)) => (just #{[:foo 3] [:bar 4]})
-  (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
 
 (fact "The 'select-entries' lens focuses on entries of a map specified by key."
   (-> {:foo 3 :bar 4 :baz 5} (collect (select-entries [:foo :bar]))) => (just #{[:foo 3] [:bar 4]})
@@ -54,7 +60,9 @@
   (-> [1 2 3] (update each delete)) => [])
 
 (fact "The 'only' lense supports deletion."
-  (-> [1 2 3] (update (only even?) delete)) => [1 3])
+  (-> [1 2 3] (update (only even?) delete)) => [1 3]
+  (-> [1 2 3] (update (only (complement even?)) delete)) => [2]
+  (-> [1 2 3] (update (only (complement even?)) delete)) => vector?)
 
 (fact "The 'each' lens supports deletion on sets."
   (-> #{1 2 3} (update each delete)) => #{})
