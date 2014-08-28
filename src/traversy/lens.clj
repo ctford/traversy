@@ -34,13 +34,13 @@
 (defn fapply [f x] (f x))
 
 (def it
-  "The identity lens."
+  "The identity lens (under 'combine')."
   (lens list fapply))
 
 (defn fconst [f x] x)
 
 (def nothing
-  "The null lens."
+  "The null lens. The identity under 'both'."
   (lens (constantly []) fconst))
 
 (defn zero [x]
@@ -87,14 +87,14 @@
     (fn [x] (mapcat #(view-all % inner) (view-all x outer)))
     (fn [f x] (update x outer #(update % inner f)))))
 
-(defn +>
+(defn *>
   "Combine lenses to form a new lens."
   [& lenses]
   (reduce combine it lenses))
 
 (def maybe
   "A lens to an optional value."
-  (+> (lens (comp list list) fapply) (only (complement nil?))))
+  (*> (lens (comp list list) fapply) (only (complement nil?))))
 
 (defn both
   "Combine two lenses in parallel to form a new lens."
@@ -103,7 +103,7 @@
     (fn [x] (concat (view-all x one) (view-all x another)))
     (fn [f x] (-> x (update one f) (update another f)))))
 
-(defn *>
+(defn +>
   "Combine lenses in parallel to form a new lens."
   [& lenses]
   (reduce both nothing lenses))
@@ -114,11 +114,11 @@
 
 (def all-values
   "A lens from map -> each value."
-  (+> all-entries (in [1])))
+  (*> all-entries (in [1])))
 
 (def all-keys
   "A lens from map -> each key."
-  (+> all-entries (in [0])))
+  (*> all-entries (in [0])))
 
 (defn select-entries
   "A lens from map -> the entries corresponding to ks."

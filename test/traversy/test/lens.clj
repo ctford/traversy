@@ -48,9 +48,9 @@
   (-> {:foo 1 :bar 2} (update all-keys {:foo :frag :bar :barp})) => {:frag 1 :barp 2})
 
 (fact "The 'maybe' lens focuses only on foci that are present."
-  (-> {:foo 1} (view-all (+> (in [:foo]) maybe))) => [1]
-  (-> {:foo 1} (view-all (+> (in [:bar]) maybe))) => []
-  (-> {:foo 1} (view-all (+> (*> (in [:foo]) (in [:bar])) maybe)))) => [1]
+  (-> {:foo 1} (view-all (*> (in [:foo]) maybe))) => [1]
+  (-> {:foo 1} (view-all (*> (in [:bar]) maybe))) => []
+  (-> {:foo 1} (view-all (*> (+> (in [:foo]) (in [:bar])) maybe)))) => [1]
 
 (fact "The 'only' lens focuses on the items in a sequence matching a condition."
   (-> [1 2 3] (view-all (only even?))) => [2]
@@ -103,15 +103,15 @@
   (-> {:foo [1 2]} (view-all (combine (in [:foo]) each))) => [1 2]
   (-> {:foo [1 2]} (update (combine (in [:foo]) each) inc)) => {:foo [2 3]})
 
-(fact "We can combine n lenses with '+>'."
-  (-> {:foo {:bar {:baz 9}}} (view (+> (in [:foo]) (in [:bar]) (in [:baz])))) => 9
-  (-> {:foo {:bar {:baz 9}}} (view-all (+> (in [:foo]) (in [:bar]) (in [:baz])))) => [9]
-  (-> {:foo {:bar {:baz 9}}} (update (+> (in [:foo]) (in [:bar]) (in [:baz])) inc)) => {:foo {:bar {:baz 10}}})
+(fact "We can combine n lenses with '*>'."
+  (-> {:foo {:bar {:baz 9}}} (view (*> (in [:foo]) (in [:bar]) (in [:baz])))) => 9
+  (-> {:foo {:bar {:baz 9}}} (view-all (*> (in [:foo]) (in [:bar]) (in [:baz])))) => [9]
+  (-> {:foo {:bar {:baz 9}}} (update (*> (in [:foo]) (in [:bar]) (in [:baz])) inc)) => {:foo {:bar {:baz 10}}})
 
 (fact "We can combine lenses in parallel with 'both'."
   (-> {:foo 8 :bar 9} (view-all (both (in [:foo]) (in [:bar])))) => [8 9]
   (-> {:foo 8 :bar 9} (update (both (in [:foo]) (in [:bar])) inc)) => {:foo 9 :bar 10})
 
-(fact "We can combine lenses in parallel with '*>'."
-  (-> {:foo 8 :bar 9 :baz 10} (view-all (*> (in [:foo]) (in [:bar]) (in [:baz])))) => [8 9 10]
-  (-> {:foo 8 :bar 9 :baz 10} (update (*> (in [:foo]) (in [:bar]) (in [:baz])) inc)) => {:foo 9 :bar 10 :baz 11})
+(fact "We can combine lenses in parallel with '+>'."
+  (-> {:foo 8 :bar 9 :baz 10} (view-all (+> (in [:foo]) (in [:bar]) (in [:baz])))) => [8 9 10]
+  (-> {:foo 8 :bar 9 :baz 10} (update (+> (in [:foo]) (in [:bar]) (in [:baz])) inc)) => {:foo 9 :bar 10 :baz 11})
