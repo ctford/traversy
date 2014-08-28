@@ -35,9 +35,11 @@
   "The identity lens."
   (lens list fapply))
 
+(defn fconst [f x] x)
+
 (def null
   "The null lens."
-  (lens (constantly []) (fn [f x] x)))
+  (lens (constantly []) fconst))
 
 (defn zero [x]
   (cond
