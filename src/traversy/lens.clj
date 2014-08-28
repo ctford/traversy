@@ -80,10 +80,6 @@
   [applicable?]
   (lens (partial filter applicable?) (partial fsome applicable?)))
 
-(def maybe
-  "A lens to an optional value."
-  (+> (lens (comp list list) fapply) (only (complement nil?))))
-
 (defn combine
   "Combine two lenses to form a new lens."
   [outer inner]
@@ -95,6 +91,10 @@
   "Combine lenses to form a new lens."
   [& lenses]
   (reduce combine it lenses))
+
+(def maybe
+  "A lens to an optional value."
+  (+> (lens (comp list list) fapply) (only (complement nil?))))
 
 (defn both
   "Combine two lenses in parallel to form a new lens."
