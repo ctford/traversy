@@ -7,9 +7,9 @@
   (-> 9 (view-all it)) => [9]
   (-> 9 (update it inc)) => 10)
 
-(fact "The 'null' lens focuses on nothing."
-  (-> 9 (view-all null)) => []
-  (-> 9 (update null inc)) => 9)
+(fact "The 'nothing' lens doesn't have a focus."
+  (-> 9 (view-all nothing)) => []
+  (-> 9 (update nothing inc)) => 9)
 
 (fact "Trying to 'view' a lens with more than one focus throws an error."
   (-> [9 10] (view each)) => (throws AssertionError))

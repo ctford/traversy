@@ -39,7 +39,7 @@
 
 (defn fconst [f x] x)
 
-(def null
+(def nothing
   "The null lens."
   (lens (constantly []) fconst))
 
@@ -106,7 +106,7 @@
 (defn *>
   "Combine lenses in parallel to form a new lens."
   [& lenses]
-  (reduce both null lenses))
+  (reduce both nothing lenses))
 
 (def all-entries
   "A lens from map -> each entry."
