@@ -11,6 +11,12 @@
   (-> 9 (view-all null)) => []
   (-> 9 (update null inc)) => 9)
 
+(fact "Trying to 'view' a lens with more than one focus throws an error."
+  (-> [9 10] (view each)) => (throws AssertionError))
+
+(fact "Using 'view' with a multi-focus lens that happens to only have a single focus is fine."
+  (-> [9 10] (view (only even?))) => 10)
+
 (fact "The 'in' lens focuses into a map based on a path."
   (-> {:foo 1} (view (in [:foo]))) => 1
   (-> {:foo 1} (view-all (in [:foo]))) => [1]

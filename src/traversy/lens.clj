@@ -11,9 +11,11 @@
   ((:focus lens) x))
 
 (defn view
-  "Return a single focus, ignoring any subsequent foci."
+  "Return the sole focus, throwing an error if there are other foci."
   [x lens]
-  (first (view-all x lens)))
+  (let [[focus & other-foci] (view-all x lens)]
+    (assert (nil? other-foci) "'view' should only be used when the caller can guarantee there is a single focus.")
+    focus))
 
 (defn update
   "Apply f to the foci of x, as specified by lens."
