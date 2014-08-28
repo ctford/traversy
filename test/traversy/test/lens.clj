@@ -42,7 +42,6 @@
   (-> [1 2 3] (update (only even?) inc)) => [1 3 3]
   (-> #{1 2 3} (update (only even?) inc)) => #{1 3})
 
-
 (fact "The 'select-entries' lens focuses on entries of a map specified by key."
   (-> {:foo 3 :bar 4 :baz 5} (collect (select-entries [:foo :bar]))) => (just #{[:foo 3] [:bar 4]})
   (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) (fn [[k v]] [v k]))) => {3 :foo 4 :bar :baz 5})
@@ -93,3 +92,11 @@
   (-> {:foo {:bar {:baz 9}}} (view (+> (in [:foo]) (in [:bar]) (in [:baz])))) => 9
   (-> {:foo {:bar {:baz 9}}} (collect (+> (in [:foo]) (in [:bar]) (in [:baz])))) => [9]
   (-> {:foo {:bar {:baz 9}}} (update (+> (in [:foo]) (in [:bar]) (in [:baz])) inc)) => {:foo {:bar {:baz 10}}})
+
+(fact "We can combine lenses in parallel with 'both'."
+  (-> {:foo 8 :bar 9} (collect (both (in [:foo]) (in [:bar])))) => [8 9]
+  (-> {:foo 8 :bar 9} (update (both (in [:foo]) (in [:bar])) inc)) => {:foo 9 :bar 10})
+
+(fact "We can combine lenses in parallel with '*>'."
+  (-> {:foo 8 :bar 9 :baz 10} (collect (*> (in [:foo]) (in [:bar]) (in [:baz])))) => [8 9 10]
+  (-> {:foo 8 :bar 9 :baz 10} (update (*> (in [:foo]) (in [:bar]) (in [:baz])) inc)) => {:foo 9 :bar 10 :baz 11})

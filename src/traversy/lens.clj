@@ -35,6 +35,10 @@
   "The identity lens."
   (lens list fapply))
 
+(def null
+  "The null lens."
+  (lens (constantly []) (fn [f x] x)))
+
 (defn zero [x]
   (cond
     (vector? x) []
@@ -84,6 +88,18 @@
   "Combine lenses to form a new lens."
   [& lenses]
   (reduce combine it lenses))
+
+(defn both
+  "Combine two lenses in parallel to form a new lens."
+  [one another]
+  (lens
+    (fn [x] (concat (collect x one) (collect x another)))
+    (fn [f x] (-> x (update one f) (update another f)))))
+
+(defn *>
+  "Combine lenses in parallel to form a new lens."
+  [& lenses]
+  (reduce both null lenses))
 
 (def all-entries
   "A lens from map -> each entry."
