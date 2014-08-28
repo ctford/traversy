@@ -7,6 +7,10 @@
   (-> 9 (collect it)) => [9]
   (-> 9 (update it inc)) => 10)
 
+(fact "The 'null' lens focuses on nothing."
+  (-> 9 (collect null)) => []
+  (-> 9 (update null inc)) => 9)
+
 (fact "The 'in' lens focuses into a map based on a path."
   (-> {:foo 1} (view (in [:foo]))) => 1
   (-> {:foo 1} (collect (in [:foo]))) => [1]
