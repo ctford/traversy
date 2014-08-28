@@ -5,7 +5,7 @@
   [focus fmap]
   {:focus focus :fmap fmap})
 
-(defn collect
+(defn view-all
   "Return a seq of the lens' foci."
   [x lens]
   ((:focus lens) x))
@@ -13,7 +13,7 @@
 (defn view
   "Return a single focus, ignoring any subsequent foci."
   [x lens]
-  (first (collect x lens)))
+  (first (view-all x lens)))
 
 (defn update
   "Apply f to the foci of x, as specified by lens."
@@ -81,7 +81,7 @@
   "Combine two lenses to form a new lens."
   [outer inner]
   (lens
-    (fn [x] (mapcat #(collect % inner) (collect x outer)))
+    (fn [x] (mapcat #(view-all % inner) (view-all x outer)))
     (fn [f x] (update x outer #(update % inner f)))))
 
 (defn +>
@@ -93,7 +93,7 @@
   "Combine two lenses in parallel to form a new lens."
   [one another]
   (lens
-    (fn [x] (concat (collect x one) (collect x another)))
+    (fn [x] (concat (view-all x one) (view-all x another)))
     (fn [f x] (-> x (update one f) (update another f)))))
 
 (defn *>
