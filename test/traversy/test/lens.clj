@@ -47,6 +47,11 @@
   (-> {:foo 1 :bar 2} (view-all all-keys)) => (just #{:foo :bar})
   (-> {:foo 1 :bar 2} (update all-keys {:foo :frag :bar :barp})) => {:frag 1 :barp 2})
 
+(fact "The 'maybe' lens focuses only on foci that are present."
+  (-> {:foo 1} (view-all (+> (in [:foo]) maybe))) => [1]
+  (-> {:foo 1} (view-all (+> (in [:bar]) maybe))) => []
+  (-> {:foo 1} (view-all (+> (*> (in [:foo]) (in [:bar])) maybe)))) => [1]
+
 (fact "The 'only' lens focuses on the items in a sequence matching a condition."
   (-> [1 2 3] (view-all (only even?))) => [2]
   (-> [1 2 3] (update (only even?) inc)) => [1 3 3]

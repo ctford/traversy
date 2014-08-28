@@ -80,6 +80,10 @@
   [applicable?]
   (lens (partial filter applicable?) (partial fsome applicable?)))
 
+(def maybe
+  "A lens to an optional value."
+  (lens #(filter (complement nil?) (list %)) (partial fwhen (complement nil?))))
+
 (defn combine
   "Combine two lenses to form a new lens."
   [outer inner]
