@@ -1,5 +1,5 @@
 (defproject traversy "0.1.0-SNAPSHOT"
-  :description "Lenses and multilenses."
+  :description "Multilenses for Clojure."
   :url "https://github.com/ctford/traversy"
   :license {:name "MIT"
             :url "http://opensource.org/licenses/MIT"}
