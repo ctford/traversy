@@ -8,6 +8,10 @@ An experimental encoding of multilenses in Clojure.
 
 See the [tests](test/traversy/test/lens.clj).
 
+# Current version
+
+0.1.0 is on Clojars.
+
 # FAQs
 
 ## Aren't these just degenerate Lenses?
