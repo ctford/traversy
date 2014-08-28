@@ -82,7 +82,7 @@
 
 (def maybe
   "A lens to an optional value."
-  (lens #(filter (complement nil?) (list %)) (partial fwhen (complement nil?))))
+  (+> (lens (comp list list) fapply) (only (complement nil?))))
 
 (defn combine
   "Combine two lenses to form a new lens."
