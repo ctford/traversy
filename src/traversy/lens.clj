@@ -45,9 +45,8 @@
 
 (defn zero [x]
   (cond
-    (vector? x) []
-    (set? x) #{}
     (map? x) {}
+    (set? x) #{}
     :otherwise []))
 
 (defn map-conj [f x] (->> x (map f) (filter (complement nil?)) (reduce conj (zero x))))
