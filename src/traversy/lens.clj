@@ -5,15 +5,15 @@
   [focus fmap]
   {:focus focus :fmap fmap})
 
-(defn view-all
+(defn view
   "Return a seq of the lens' foci."
   [x lens]
   ((:focus lens) x))
 
-(defn view
+(defn view-single
   "Return the sole focus, throwing an error if there are other foci."
   [x lens]
-  (let [[focus & other-foci] (view-all x lens)]
+  (let [[focus & other-foci] (view x lens)]
     (assert (nil? other-foci) "'view' should only be used when the caller can guarantee there is a single focus.")
     focus))
 
@@ -84,7 +84,7 @@
   "Combine two lenses to form a new lens."
   [outer inner]
   (lens
-    (fn [x] (mapcat #(view-all % inner) (view-all x outer)))
+    (fn [x] (mapcat #(view % inner) (view x outer)))
     (fn [f x] (update x outer #(update % inner f)))))
 
 (defn *>
@@ -100,7 +100,7 @@
   "Combine two lenses in parallel to form a new lens."
   [one another]
   (lens
-    (fn [x] (concat (view-all x one) (view-all x another)))
+    (fn [x] (concat (view x one) (view x another)))
     (fn [f x] (-> x (update one f) (update another f)))))
 
 (defn +>
