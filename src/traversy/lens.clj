@@ -27,8 +27,8 @@
   [x]
   (constantly x))
 
-(def delete
-  "When supplied as the f to update, deletes the foci of the lens."
+(def delete-entry
+  "When supplied as the f to update an entry, deletes the foci of the lens."
   (put nil))
 
 (defn fapply [f x] (f x))
@@ -49,7 +49,7 @@
     (set? x) #{}
     :otherwise []))
 
-(defn map-conj [f x] (->> x (map f) (filter (complement nil?)) (reduce conj (zero x))))
+(defn map-conj [f x] (->> x (map f) (reduce conj (zero x))))
 
 (def each
   "A lens from collection -> item."

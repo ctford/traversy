@@ -62,24 +62,13 @@
   (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) (fn [[k v]] [v k]))) => {3 :foo 4 :bar :baz 5})
 
 (fact "The entries lenses support deletion."
-  (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) delete)) => {:baz 5}
-  (-> {:foo 3 :bar 4 :baz 5} (update all-entries delete)) => {})
+  (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) delete-entry)) => {:baz 5}
+  (-> {:foo 3 :bar 4 :baz 5} (update all-entries delete-entry)) => {})
 
 (fact "put sets the value at all the foci of a lens."
   (-> [1 2 3] (update (only even?) (put 7))) => [1 7 3]
   (-> #{1 2 3} (update each (put 7))) => #{7}
   (-> {:foo 3 :bar 4} (update (select-entries [:foo]) (put [:baz 7]) )) => {:bar 4 :baz 7})
-
-(fact "The items lenses support deletion."
-  (-> [1 2 3] (update each delete)) => [])
-
-(fact "The 'only' lens supports deletion."
-  (-> [1 2 3] (update (only even?) delete)) => [1 3]
-  (-> [1 2 3] (update (only (complement even?)) delete)) => [2]
-  (-> [1 2 3] (update (only (complement even?)) delete)) => vector?)
-
-(fact "The 'each' lens supports deletion on sets."
-  (-> #{1 2 3} (update each delete)) => #{})
 
 (fact "The 'xth' lens focuses on the nth item of a sequence."
   (-> [2 3 4] (view-single (xth 1))) => 3
