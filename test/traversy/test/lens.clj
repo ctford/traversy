@@ -73,7 +73,7 @@
 (fact "The items lenses support deletion."
   (-> [1 2 3] (update each delete)) => [])
 
-(fact "The 'only' lense supports deletion."
+(fact "The 'only' lens supports deletion."
   (-> [1 2 3] (update (only even?) delete)) => [1 3]
   (-> [1 2 3] (update (only (complement even?)) delete)) => [2]
   (-> [1 2 3] (update (only (complement even?)) delete)) => vector?)
