@@ -16,7 +16,8 @@ See the [tests](test/traversy/test/lens.clj).
 
 ## Aren't these just degenerate Lenses?
 
-Yes! In fact, they're [Traversals](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html).
+Yes! In fact, they're degenerate
+[Traversals](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html).
 
 ## So they obey the [Traversal Laws](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html#t:Traversal)?
 
