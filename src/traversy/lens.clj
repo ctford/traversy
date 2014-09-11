@@ -68,10 +68,8 @@
   "A lens from sequence -> index/item pair."
   (lens index findexed))
 
-(defn fnth [n f [x & xs]]
-  (if (zero? n)
-    (cons (f x) xs)
-    (cons x (fnth (dec n) f xs))))
+(defn fnth [n f x]
+  (concat (take n x) [(f (nth x n))] (drop (inc n) x)))
 
 (defn xth
   "A lens from collection -> nth item."
