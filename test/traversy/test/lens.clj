@@ -39,6 +39,11 @@
   (-> [1 2 3] (view indexed)) => [[0 1] [1 2] [2 3]]
   (-> [1 2 3] (update indexed (fn [[i v]] [i (+ i v)]))) => [1 3 5])
 
+(fact "Pairs can have their values set 'by-key' with an associative."
+  (-> [1 2 3] (update indexed (by-key ["foo" "bar" "baz"]))) => ["foo" "bar" "baz"]
+  (-> [1 2 3] (update indexed (by-key {1 99}))) => [1 99 3]
+  (-> {:foo 1 :bar 2} (update all-entries (by-key {:foo 77}))) => {:foo 77 :bar 2})
+      
 (fact "The 'all-entries' lens focuses on the entries of a map."
   (-> {:foo 3 :bar 4} (view all-entries)) => (just #{[:foo 3] [:bar 4]})
   (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
