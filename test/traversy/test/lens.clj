@@ -35,6 +35,10 @@
   (-> {:foo 3 :bar 4} (view all-entries)) => (just #{[:foo 3] [:bar 4]})
   (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
 
+(fact "The 'indexed' lens focuses on indexed pairs in a sequence."
+  (-> [1 2 3] (view indexed)) => [[0 1] [1 2] [2 3]]
+  (-> [1 2 3] (update indexed (fn [[i v]] [i (+ i v)]))) => [1 3 5])
+
 (fact "The 'all-entries' lens focuses on the entries of a map."
   (-> {:foo 3 :bar 4} (view all-entries)) => (just #{[:foo 3] [:bar 4]})
   (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})

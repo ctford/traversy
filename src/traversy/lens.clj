@@ -55,6 +55,13 @@
   "A lens from collection -> item."
   (lens seq map-conj))
 
+(def by-index (partial map vector (range)))
+(defn findexed [f x] (map (comp second f) (by-index x)))
+
+(def indexed
+  "A lens from sequence -> index/item pair."
+  (lens by-index findexed))
+
 (defn fnth [n f [x & xs]]
   (if (zero? n)
     (cons (f x) xs)
