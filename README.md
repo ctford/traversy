@@ -10,62 +10,62 @@ On a Clojure project, we discovered that changes to the structure of our domain 
 big waves throughout the codebase. The issue was that the entire structure of large domain objects was encoded
 in functions that should only have been concerned with a small part of the whole:
 
-  (def bank {:name "BanCorp"
-             :customers [{:account-number "001234":name "Chris" :balance 100}
-                         {:account-number "131444":name "Alice" :balance 15000}]})
+    (def bank {:name "BanCorp"
+               :customers [{:account-number "001234":name "Chris" :balance 100}
+                           {:account-number "131444":name "Alice" :balance 15000}]})
 
-  (defn credit [amount customer]
-    (-> customer (update-in [:balance] (partial + amount))))
+    (defn credit [amount customer]
+      (-> customer (update-in [:balance] (partial + amount))))
 
-  (defn deposit [bank id amount]
-    (let [update-customer (fn [{account-number :account-number :as customer}]
-                            (if (= id account-number) (credit amount customer) customer))]
-      (-> bank (update-in [:customers] (fn [customers] (map update-customer customers))))))
+    (defn deposit [bank id amount]
+      (let [update-customer (fn [{account-number :account-number :as customer}]
+                              (if (= id account-number) (credit amount customer) customer))]
+        (-> bank (update-in [:customers] (fn [customers] (map update-customer customers))))))
 
-  (-> bank (deposit "001234" 100))
+    (-> bank (deposit "001234" 100))
 
 We can instead build up `deposit`'s understanding of how to apply a credit to a customer out of individual
 traversals:
 
-  (defn account-with [id]
-    (*> (in [:customers]) (only #(-> % :account-number (= id)))))
+    (defn account-with [id]
+      (*> (in [:customers]) (only #(-> % :account-number (= id)))))
 
 `account-with` is a composite traversal, which focuses into the overall structure with `in` and then picks out the
 relevant customer with `only`.
 
-  (defn deposit [bank id amount]
-    (update bank (account-with id) (partial credit amount)))
+    (defn deposit [bank id amount]
+      (update bank (account-with id) (partial credit amount)))
 
-  (-> bank (deposit "001234" 100))
+    (-> bank (deposit "001234" 100))
 
 As we develop the application, we realise that we need multiple branches, and that we would like to use the
 customer's account number as a key in a map to better model our data. We reflect these changes in the traversal:
 
-  (defn account-with [id]
-    (*> (in [:branches]) all-values (in [:customers]) (select-entries [id]) (in [1])))
+    (defn account-with [id]
+      (*> (in [:branches]) all-values (in [:customers]) (select-entries [id]) (in [1])))
 
 `deposit` can remain unchanged:
 
-  (defn deposit [bank id amount]
-    (update bank (account-with id) (partial credit amount)))
+    (defn deposit [bank id amount]
+      (update bank (account-with id) (partial credit amount)))
 
-  (-> bank (deposit "001234" 100))
+    (-> bank (deposit "001234" 100))
 
 What's more, we can use the same traversal to view a customer's account:
-  (-> bank (view-single "001234"))
 
+    (-> bank (view-single "001234"))
 
 And if we want to reuse parts of the traversal in different contexts, we can break it down further:
 
-  (def customers (*> (in [:branches]) all-values (in [:customers])))
-  (defn select-account [id] (*> select-entries [id]) (in [1]))
+    (def customers (*> (in [:branches]) all-values (in [:customers])))
+    (defn select-account [id] (*> select-entries [id]) (in [1]))
 
-  (defn account-with [id]
-    (*> customers (select-account id)))
+    (defn account-with [id]
+      (*> customers (select-account id)))
 
 We can now view all customer names using the `customers` traversal:
 
-  (-> bank (view (*> customers all-values (in [:name]))))
+    (-> bank (view (*> customers all-values (in [:name]))))
 
 # Usage
 
