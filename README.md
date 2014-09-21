@@ -80,7 +80,8 @@ See the [tests](test/traversy/test/lens.clj).
 ## Aren't these just degenerate Lenses?
 
 Yes! In fact, they're degenerate
-[Traversals](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html).
+[Traversals](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html), with the `Foldable` and
+`Functor` instances and without the generality of traversing using arbitrary `Applicatives`.
 
 ## So they obey the [Traversal Laws](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html#t:Traversal)?
 
