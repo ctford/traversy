@@ -8,14 +8,21 @@ An experimental encoding of multilenses in Clojure.
 
 On a Clojure project, we discovered that changes to the structure of our domain models caused
 big waves throughout the codebase. The issue was that the entire structure of large domain objects was encoded
-in functions that should only have been concerned with a small part of the whole:
+in functions that should only have been concerned with a small part of the whole.
+
+As an illustrative example, imagine we have a bank represented as a nested data structure:
 
     (def bank {:name "BanCorp"
                :customers [{:account-number "001234":name "Chris" :balance 100}
                            {:account-number "131444":name "Alice" :balance 15000}]})
 
+We might also have a function for crediting customers:
+
     (defn credit [amount customer]
       (-> customer (update-in [:balance] (partial + amount))))
+
+But the customers are embedded inside the bank data structure. Any attempt to apply a credit to a customer
+has to traverse through the bank to find them:
 
     (defn deposit [bank id amount]
       (let [update-customer (fn [{account-number :account-number :as customer}]
