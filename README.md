@@ -73,7 +73,7 @@ See the [tests](test/traversy/test/lens.clj).
 
 # Current version
 
-0.1.0 is on Clojars.
+0.2.0 is on Clojars.
 
 # FAQs
 
