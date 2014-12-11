@@ -122,4 +122,4 @@ and the variadic `*>`.
 
 ## Is this stable enough to use in production?
 
-No. The design is still in flux, and the API may change radically.
+Traversy is in production use on the project it originated from, but the API may yet change.
