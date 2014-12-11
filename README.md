@@ -4,7 +4,12 @@
 
 An experimental encoding of multilenses in Clojure.
 
-# The motivation
+# Background
+
+At the 2014 Clojure eXchange [I gave a talk about Lenses in general, and Traversy
+specifically](https://skillsmatter.com/skillscasts/6034-journey-through-the-looking-glass).
+
+# Motivation
 
 On a Clojure project, we discovered that changes to the structure of our domain models caused
 big waves throughout the codebase. The issue was that the entire structure of large domain objects was encoded
