@@ -83,14 +83,6 @@
   [path]
   (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))
 
-(defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
-(defn fsome [applicable? f x] (map-conj (partial fwhen applicable? f) x))
-
-(defn only
-  "A lens from collection -> applicable items."
-  [applicable?]
-  (lens (partial filter applicable?) (partial fsome applicable?)))
-
 (defn combine
   "Combine two lenses to form a new lens."
   [outer inner]
@@ -103,9 +95,17 @@
   [& lenses]
   (reduce combine it lenses))
 
+(defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
+
 (defn assuming [applies?]
   "A lens to a conditional value."
-  (*> (lens (comp list list) fapply) (only applies?)))
+  (lens (fn [x] (if (applies? x) [x] []))
+        (partial fwhen applies?)))
+
+(defn only
+  "A lens from collection -> applicable items."
+  [applicable?]
+  (*> each (assuming applicable?)))
 
 (def maybe
   "A lens to an optional value."
