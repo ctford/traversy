@@ -11,10 +11,11 @@
   ((:focus lens) x))
 
 (defn view-single
-  "Return the sole focus, throwing an error if there are other foci."
+  "Return the sole focus, throwing an error if there are other or no foci."
   [x lens]
-  (let [[focus & other-foci] (view x lens)]
-    (assert (nil? other-foci) "'view' should only be used when the caller can guarantee there is a single focus.")
+  (let [[focus & _ :as foci] (view x lens)
+        quantity (count foci)]
+    (assert (= 1 quantity) (format "Found %d foci." quantity))
     focus))
 
 (defn update

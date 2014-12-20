@@ -11,8 +11,9 @@
   (-> 9 (view nothing)) => []
   (-> 9 (update nothing inc)) => 9)
 
-(fact "Trying to 'view-single' a lens with more than one focus throws an error."
-  (-> [9 10] (view-single each)) => (throws AssertionError))
+(fact "Trying to 'view-single' a lens that doesn't have exactly one focus throws an error."
+  (-> [9 10] (view-single each)) => (throws AssertionError)
+  (-> [] (view-single each)) => (throws AssertionError))
 
 (fact "Using 'view-single' with a multi-focus lens that happens to only have a single focus is fine."
   (-> [9 10] (view-single (only even?))) => 10)
