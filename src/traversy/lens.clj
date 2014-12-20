@@ -103,9 +103,13 @@
   [& lenses]
   (reduce combine it lenses))
 
+(defn assuming [applies?]
+  "A lens to a conditional value."
+  (*> (lens (comp list list) fapply) (only applies?)))
+
 (def maybe
   "A lens to an optional value."
-  (*> (lens (comp list list) fapply) (only (complement nil?))))
+  (assuming (complement nil?)))
 
 (defn both
   "Combine two lenses in parallel to form a new lens."
