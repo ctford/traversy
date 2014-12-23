@@ -98,7 +98,7 @@
 
 (defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
 
-(defn assuming [applies?]
+(defn conditionally [applies?]
   "A lens to a conditional value."
   (lens (fn [x] (if (applies? x) [x] []))
         (partial fwhen applies?)))
@@ -106,11 +106,11 @@
 (defn only
   "A lens from collection -> applicable items."
   [applicable?]
-  (*> each (assuming applicable?)))
+  (*> each (conditionally applicable?)))
 
 (def maybe
   "A lens to an optional value."
-  (assuming (complement nil?)))
+  (conditionally (complement nil?)))
 
 (defn both
   "Combine two lenses in parallel to form a new lens."

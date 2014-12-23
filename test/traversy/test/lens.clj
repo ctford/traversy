@@ -57,10 +57,10 @@
   (-> {:foo 1 :bar 2} (view all-keys)) => (just #{:foo :bar})
   (-> {:foo 1 :bar 2} (update all-keys {:foo :frag :bar :barp})) => {:frag 1 :barp 2})
 
-(fact "The 'assuming' lens focuses only on foci that match a condition."
-  (-> 1 (view (assuming odd?))) => [1]
-  (-> 1 (view (assuming even?))) => []
-  (-> {:foo 1 :bar 2} (view (*> (+> (in [:foo]) (in [:bar])) (assuming odd?)))) => [1])
+(fact "The 'conditionally' lens focuses only on foci that match a condition."
+  (-> 1 (view (conditionally odd?))) => [1]
+  (-> 1 (view (conditionally even?))) => []
+  (-> {:foo 1 :bar 2} (view (*> (+> (in [:foo]) (in [:bar])) (conditionally odd?)))) => [1])
 
 (fact "The 'maybe' lens focuses only on foci that are present."
   (-> {:foo 1} (view (*> (in [:foo]) maybe))) => [1]
