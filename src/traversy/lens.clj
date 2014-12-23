@@ -98,8 +98,9 @@
 
 (defn fwhen [applies? f x] (if (applies? x) (f x) x))
 
-(defn conditionally [applies?]
+(defn conditionally
   "A lens to a conditional value."
+  [applies?]
   (lens (fn [x] (if (applies? x) [x] []))
         (partial fwhen applies?)))
 
