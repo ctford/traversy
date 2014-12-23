@@ -96,7 +96,7 @@
   [& lenses]
   (reduce combine it lenses))
 
-(defn fwhen [applicable? f x] (if (applicable? x) (f x) x))
+(defn fwhen [applies? f x] (if (applies? x) (f x) x))
 
 (defn conditionally [applies?]
   "A lens to a conditional value."
@@ -105,8 +105,8 @@
 
 (defn only
   "A lens from collection -> applicable items."
-  [applicable?]
-  (*> each (conditionally applicable?)))
+  [applies?]
+  (*> each (conditionally applies?)))
 
 (def maybe
   "A lens to an optional value."
