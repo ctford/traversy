@@ -96,6 +96,18 @@
   [& lenses]
   (reduce combine it lenses))
 
+(defn blend
+  [one-key one another-key another]
+  (lens
+    (fn [x] (map #(hash-map one-key %1 another-key %2) (view x one) (view x another)))
+    (fn [f x]
+      (let [value (-> {one-key (view-single x one)
+                       another-key (view-single x another)}
+                      f)
+            one-value (get value one-key)
+            another-value (get value another-key)]
+        (-> x (update one (put one-value)) (update another (put another-value)))))))
+
 (defn fwhen [applies? f x] (if (applies? x) (f x) x))
 
 (defn conditionally [applies?]

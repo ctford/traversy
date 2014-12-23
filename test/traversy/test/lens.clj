@@ -119,3 +119,18 @@
 (fact "We can combine lenses in parallel with '+>'."
   (-> {:foo 8 :bar 9 :baz 10} (view (+> (in [:foo]) (in [:bar]) (in [:baz])))) => [8 9 10]
   (-> {:foo 8 :bar 9 :baz 10} (update (+> (in [:foo]) (in [:bar]) (in [:baz])) inc)) => {:foo 9 :bar 10 :baz 11})
+
+(fact "We can blend single-focus lenses with 'blend'."
+  (-> {:foo 8 :bar 9} (view (blend :f (in [:foo]) :b (in [:bar])))) => [{:f 8 :b 9}]
+  (-> {:foo 8 :bar 9}
+      (update
+        (blend :f (in [:foo]) :b (in [:bar]))
+        #(-> % (update-in [:f] inc) (update-in [:b] dec))))
+      => {:foo 9 :bar 8})
+
+(fact "We can blend multiple focus lenses with 'blend'."
+  (-> {:foo [8 9] :bar [9 10]}
+      (view
+        (blend
+          :f (*> (in [:foo]) each)
+          :b (*> (in [:bar]) each)))) => [{:f 8 :b 9} {:f 9 :b 10}])
