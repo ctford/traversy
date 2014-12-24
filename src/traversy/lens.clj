@@ -2,10 +2,13 @@
   (:require [clojure.core.typed :as typed]))
 
 (typed/defalias Unadic [typed/Any -> typed/Any])
-(typed/defalias Fmap [Unadic typed/Any -> typed/Any])
-(typed/defalias Lens (typed/HMap :mandatory {:focus Unadic :fmap Fmap}))
+(typed/defalias Endo (typed/All [a] [a -> a]))
+;(typed/defalias Focus [typed/Any -> typed/ASeq])
+(typed/defalias Focus (typed/All [a] [a -> (typed/Seq a)]))
+(typed/defalias Fmap (typed/All [a] [Unadic a -> a]))
+(typed/defalias Lens (typed/HMap :mandatory {:focus Focus :fmap Fmap}))
 
-(typed/ann lens [Unadic Fmap -> Lens])
+(typed/ann lens [Focus Fmap -> Lens])
 (defn lens
   "Construct a lens from a focus :: x -> seq and an fmap :: f x -> x."
   [focus fmap]
@@ -41,20 +44,31 @@
 
 (def delete-entry
   "When supplied as the f to update an entry, deletes the foci of the lens."
-  (put nil))
+  (put nil)))
 
+(typed/ann fapply Fmap)
 (defn fapply [f x] (f x))
 
+(typed/ann listify Focus)
+(defn listify [x] (seq [x]))
+
+(typed/ann it Lens)
 (def it
   "The identity lens (under 'combine')."
-  (lens list fapply))
+  (lens listify fapply))
 
+(typed/ann fconst Fmap)
 (defn fconst [f x] x)
 
+(typed/ann emptify Focus)
+(defn emptify [x] (rest (seq [x])))
+
+(typed/ann nothing Lens)
 (def nothing
   "The null lens. The identity under 'both'."
-  (lens (constantly []) fconst))
+  (lens emptify fconst))
 
+(typed/tc-ignore
 (defn zero [x]
   (cond
     (map? x) {}
