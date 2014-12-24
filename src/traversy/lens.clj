@@ -1,30 +1,38 @@
 (ns traversy.lens
   (:require [clojure.core.typed :as typed]))
 
-(typed/tc-ignore
+(typed/defalias Unadic [typed/Any -> typed/Any])
+(typed/defalias Fmap [Unadic typed/Any -> typed/Any])
+(typed/defalias Lens (typed/HMap :mandatory {:focus Unadic :fmap Fmap}))
 
+(typed/ann lens [Unadic Fmap -> Lens])
 (defn lens
   "Construct a lens from a focus :: x -> seq and an fmap :: f x -> x."
   [focus fmap]
   {:focus focus :fmap fmap})
 
+(typed/ann view [typed/Any Lens -> typed/Any])
 (defn view
   "Return a seq of the lens' foci."
   [x lens]
   ((:focus lens) x))
 
+(typed/tc-ignore
 (defn view-single
   "Return the sole focus, throwing an error if there are other or no foci."
   [x lens]
   (let [[focus & _ :as foci] (view x lens)
         quantity (count foci)]
     (assert (= 1 quantity) (format "Found %d foci." quantity))
-    focus))
+    focus)))
 
+(typed/ann update [typed/Any Lens Unadic -> typed/Any])
 (defn update
   "Apply f to the foci of x, as specified by lens."
   [x lens f]
   ((:fmap lens) f x))
+
+(typed/tc-ignore
 
 (defn put
   "When supplied as the f to update, sets all the foci to x."
