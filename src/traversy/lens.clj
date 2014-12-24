@@ -1,4 +1,7 @@
-(ns traversy.lens)
+(ns traversy.lens
+  (:require [clojure.core.typed :as typed]))
+
+(typed/tc-ignore
 
 (defn lens
   "Construct a lens from a focus :: x -> seq and an fmap :: f x -> x."
@@ -141,3 +144,5 @@
   "A lens from map -> the entries corresponding to ks."
   [ks]
   (only (fn [[k v]] ((set ks) k))))
+
+)
