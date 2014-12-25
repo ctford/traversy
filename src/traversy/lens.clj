@@ -1,11 +1,9 @@
 (ns traversy.lens
   (:require [clojure.core.typed :as typed]))
 
-(typed/defalias Unadic [typed/Any -> typed/Any])
 (typed/defalias Endo (typed/All [a] [a -> a]))
-;(typed/defalias Focus [typed/Any -> typed/ASeq])
 (typed/defalias Focus (typed/All [a] [a -> (typed/Seq a)]))
-(typed/defalias Fmap (typed/All [a] [Unadic a -> a]))
+(typed/defalias Fmap (typed/All [a] [Endo a -> a]))
 (typed/defalias Lens (typed/HMap :mandatory {:focus Focus :fmap Fmap}))
 
 (typed/ann lens [Focus Fmap -> Lens])
@@ -29,7 +27,7 @@
     (assert (= 1 quantity) (format "Found %d foci." quantity))
     focus)))
 
-(typed/ann update [typed/Any Lens Unadic -> typed/Any])
+(typed/ann update [typed/Any Lens Endo -> typed/Any])
 (defn update
   "Apply f to the foci of x, as specified by lens."
   [x lens f]
