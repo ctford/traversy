@@ -2,7 +2,7 @@
   (:require [clojure.core.typed :as typed]))
 
 (typed/defalias Endo (typed/All [a] [a -> a]))
-(typed/defalias Focus (typed/All [a] [a -> (typed/Seq a)]))
+(typed/defalias Focus (typed/All [a] [a -> (typed/Option (typed/NonEmptyASeq a))]))
 (typed/defalias Fmap (typed/All [a] [Endo a -> a]))
 (typed/defalias Lens (typed/HMap :mandatory {:focus Focus :fmap Fmap}))
 
@@ -59,7 +59,7 @@
 (defn fconst [f x] x)
 
 (typed/ann emptify Focus)
-(defn emptify [x] (rest (seq [x])))
+(defn emptify [_] (seq []))
 
 (typed/ann nothing Lens)
 (def nothing
