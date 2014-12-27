@@ -1,8 +1,9 @@
 (ns traversy.lens
   (:require [clojure.core.typed :as typed]))
 
+(typed/defalias Seq? (typed/TFn [[a :variance :covariant]] (typed/Option (typed/NonEmptyASeq a))))
 (typed/defalias Endo (typed/All [a] [a -> a]))
-(typed/defalias Focus (typed/All [a] [a -> (typed/Option (typed/NonEmptyASeq a))]))
+(typed/defalias Focus (typed/All [a] [a -> (Seq? a)]))
 (typed/defalias Fmap (typed/All [a] [Endo a -> a]))
 (typed/defalias Lens (typed/HMap :mandatory {:focus Focus :fmap Fmap}))
 
