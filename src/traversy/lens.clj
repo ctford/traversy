@@ -39,8 +39,7 @@
   [x lens f]
   ((:fmap lens) f x))
 
-(typed/tc-ignore
-
+(typed/ann put (typed/All [a b] [b -> [a -> b]]))
 (defn put
   "When supplied as the f to update, sets all the foci to x."
   [x]
@@ -48,7 +47,7 @@
 
 (def delete-entry
   "When supplied as the f to update an entry, deletes the foci of the lens."
-  (put nil)))
+  (put nil))
 
 (typed/ann fapply (typed/All [a] (Fmap a a)))
 (defn fapply [f x] (f x))
@@ -68,19 +67,24 @@
 (typed/ann emptify (typed/All [a b] (Focus a b)))
 (defn emptify [_] (seq []))
 
+(typed/tc-ignore
+(typed/ann nothing (typed/All [a b] (Lens a b)))
 (def nothing
   "The null lens. The identity under 'both'."
-  (lens (constantly (seq [])) fconst))
+  (lens emptify fconst)))
 
-(typed/tc-ignore
+(typed/ann zero (typed/All [a] [(typed/Seqable a) -> (typed/Seqable a)]))
 (defn zero [x]
   (cond
     (map? x) {}
     (set? x) #{}
     :otherwise []))
 
+(typed/tc-ignore
+(typed/ann map-conj (typed/All [a b] [[a -> b] (typed/Seqable a) -> (typed/Seqable b)]))
 (defn map-conj [f x] (->> x (map f) (reduce conj (zero x))))
 
+(typed/ann each (typed/All [a] (Lens (typed/Seqable a) a)))
 (def each
   "A lens from collection -> item."
   (lens seq map-conj))
