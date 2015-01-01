@@ -57,7 +57,7 @@
 (defn listify [x] (seq [x]))
 
 (typed/tc-ignore
-(typed/ann it Lens)
+(typed/ann it (typed/All [a] (Lens a a)))
 (def it
   "The identity lens (under 'combine')."
   (lens listify fapply)))
@@ -68,10 +68,9 @@
 (typed/ann emptify (typed/All [a b] (Focus a b)))
 (defn emptify [_] (seq []))
 
-(typed/tc-ignore
 (def nothing
   "The null lens. The identity under 'both'."
-  (lens (constantly []) fconst)))
+  (lens (constantly (seq [])) fconst))
 
 (typed/tc-ignore
 (defn zero [x]

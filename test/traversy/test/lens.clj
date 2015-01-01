@@ -12,7 +12,7 @@
   (-> 9 (update it inc)) => 10)
 
 (fact "The 'nothing' lens doesn't have a focus."
-  (-> 9 (view nothing)) => []
+  (-> 9 (view nothing)) => (seq [])
   (-> 9 (update nothing inc)) => 9)
 
 (fact "Trying to 'view-single' a lens that doesn't have exactly one focus throws an error."
