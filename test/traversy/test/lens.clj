@@ -1,6 +1,10 @@
 (ns traversy.test.lens
   (:require [midje.sweet :refer :all]
-            [traversy.lens :refer :all]))
+            [traversy.lens :refer :all]
+            [clojure.core.typed :as typed]))
+
+(fact "The 'lens' namespace typechecks."
+  (typed/check-ns 'traversy.lens) => :ok)
 
 (fact "The 'it' lens is the identity."
   (-> 9 (view-single it)) => 9
