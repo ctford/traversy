@@ -1,19 +1,24 @@
 (ns traversy.lens
   (:require [clojure.core.typed :as typed]))
 
-(typed/defalias Seq? (typed/TFn [[a :variance :covariant]] (typed/Option (typed/NonEmptyASeq a))))
-(typed/defalias Endo (typed/All [a] [a -> a]))
-(typed/defalias Focus (typed/All [a] [a -> (Seq? a)]))
-(typed/defalias Fmap (typed/All [a] [Endo a -> a]))
-(typed/defalias Lens (typed/HMap :mandatory {:focus Focus :fmap Fmap}))
+(typed/defalias Seq?
+  (typed/TFn [[a :variance :covariant]] (typed/Option (typed/NonEmptyASeq a))))
+(typed/defalias Endo (typed/TFn [[a :variance :covariant]] [a -> a]))
+(typed/defalias Focus
+  (typed/TFn [[a :variance :contravariant] [b :variance :covariant]] [a -> (Seq? b)]))
+(typed/defalias Fmap
+  (typed/TFn [[a :variance :covariant] [b :variance :contravariant]] [(Endo b) a -> a]))
+(typed/defalias Lens
+  (typed/TFn [[a :variance :invariant] [b :variance :invariant]]
+             (typed/HMap :mandatory {:focus (Focus a b) :fmap (Fmap a b)})))
 
-(typed/ann lens [Focus Fmap -> Lens])
+(typed/ann lens (typed/All [a b] [(Focus a b) (Fmap a b) -> (Lens a b)]))
 (defn lens
   "Construct a lens from a focus :: x -> seq and an fmap :: f x -> x."
   [focus fmap]
   {:focus focus :fmap fmap})
 
-(typed/ann view [typed/Any Lens -> typed/Any])
+(typed/ann view (typed/All [a b] [a (Lens a b) -> (Seq? b)]))
 (defn view
   "Return a seq of the lens' foci."
   [x lens]
@@ -28,13 +33,13 @@
     (assert (= 1 quantity) (format "Found %d foci." quantity))
     focus)))
 
-(typed/ann update [typed/Any Lens Endo -> typed/Any])
+(typed/tc-ignore
+
+(typed/ann update (typed/All [a b] [a (Lens a b) (Endo b) -> a]))
 (defn update
   "Apply f to the foci of x, as specified by lens."
   [x lens f]
   ((:fmap lens) f x))
-
-(typed/tc-ignore
 
 (defn put
   "When supplied as the f to update, sets all the foci to x."
@@ -45,21 +50,23 @@
   "When supplied as the f to update an entry, deletes the foci of the lens."
   (put nil)))
 
-(typed/ann fapply Fmap)
+(typed/tc-ignore
+(typed/ann fapply (typed/All [a b] (Fmap a b)))
 (defn fapply [f x] (f x))
 
-(typed/ann listify Focus)
+(typed/ann listify (typed/All [a b] (Focus a b)))
 (defn listify [x] (seq [x]))
 
 (typed/ann it Lens)
 (def it
   "The identity lens (under 'combine')."
-  (lens listify fapply))
+  (lens listify fapply)))
 
+(typed/tc-ignore
 (typed/ann fconst Fmap)
-(defn fconst [f x] x)
+(defn fconst [f x] x))
 
-(typed/ann emptify Focus)
+(typed/ann emptify (typed/All [a b] (Focus a b)))
 (defn emptify [_] (seq []))
 
 (typed/tc-ignore
