@@ -62,10 +62,10 @@
 (typed/ann emptify Focus)
 (defn emptify [_] (seq []))
 
-(typed/ann nothing Lens)
+(typed/tc-ignore
 (def nothing
   "The null lens. The identity under 'both'."
-  (lens emptify fconst))
+  (lens (constantly []) fconst)))
 
 (typed/tc-ignore
 (defn zero [x]
