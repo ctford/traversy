@@ -50,21 +50,20 @@
   "When supplied as the f to update an entry, deletes the foci of the lens."
   (put nil)))
 
-(typed/tc-ignore
-(typed/ann fapply (typed/All [a b] (Fmap a b)))
+(typed/ann fapply (typed/All [a] (Fmap a a)))
 (defn fapply [f x] (f x))
 
-(typed/ann listify (typed/All [a b] (Focus a b)))
+(typed/ann listify (typed/All [a] (Focus a a)))
 (defn listify [x] (seq [x]))
 
+(typed/tc-ignore
 (typed/ann it Lens)
 (def it
   "The identity lens (under 'combine')."
   (lens listify fapply)))
 
-(typed/tc-ignore
-(typed/ann fconst Fmap)
-(defn fconst [f x] x))
+(typed/ann fconst (typed/All [a b] (Fmap a b)))
+(defn fconst [f x] x)
 
 (typed/ann emptify (typed/All [a b] (Focus a b)))
 (defn emptify [_] (seq []))
