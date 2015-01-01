@@ -3,11 +3,11 @@
 
 (typed/defalias Seq?
   (typed/TFn [[a :variance :covariant]] (typed/Option (typed/NonEmptyASeq a))))
-(typed/defalias Endo (typed/TFn [[a :variance :covariant]] [a -> a]))
+(typed/defalias Endo (typed/TFn [[a :variance :invariant]] [a -> a]))
 (typed/defalias Focus
   (typed/TFn [[a :variance :contravariant] [b :variance :covariant]] [a -> (Seq? b)]))
 (typed/defalias Fmap
-  (typed/TFn [[a :variance :covariant] [b :variance :contravariant]] [(Endo b) a -> a]))
+  (typed/TFn [[a :variance :invariant] [b :variance :invariant]] [(Endo b) a -> a]))
 (typed/defalias Lens
   (typed/TFn [[a :variance :invariant] [b :variance :invariant]]
              (typed/HMap :mandatory {:focus (Focus a b) :fmap (Fmap a b)})))
@@ -33,13 +33,13 @@
     (assert (= 1 quantity) (format "Found %d foci." quantity))
     focus)))
 
-(typed/tc-ignore
-
 (typed/ann update (typed/All [a b] [a (Lens a b) (Endo b) -> a]))
 (defn update
   "Apply f to the foci of x, as specified by lens."
   [x lens f]
   ((:fmap lens) f x))
+
+(typed/tc-ignore
 
 (defn put
   "When supplied as the f to update, sets all the foci to x."
