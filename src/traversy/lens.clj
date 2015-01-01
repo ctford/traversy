@@ -87,9 +87,16 @@
 (typed/ann each (typed/All [a] (Lens (typed/Seqable a) a)))
 (def each
   "A lens from collection -> item."
-  (lens seq map-conj))
+  (lens seq map-conj)))
 
-(def index (partial map vector (range)))
+(typed/ann pair (typed/All [a] [typed/AnyInteger a -> (typed/HVec [typed/AnyInteger a])]))
+(defn pair [i y] [i y])
+
+(typed/tc-ignore
+(typed/ann index (typed/All [a] [(Seq? a) -> (typed/Seqable (typed/HVec [typed/AnyInteger a]))]))
+(defn index [xs]
+  (map pair (range) xs))
+
 (defn findexed [f x] (map (comp second f) (index x)))
 
 (defn by-key
@@ -100,11 +107,17 @@
 
 (def indexed
   "A lens from sequence -> index/item pair."
-  (lens index findexed))
+  (lens index findexed)))
 
+(typed/ann fnth
+           (typed/All [a] [typed/AnyInteger
+                           [a -> a]
+                           (typed/I (typed/Seqable a) typed/Sequential)
+                           -> (typed/Seqable a)]))
 (defn fnth [n f x]
   (concat (take n x) [(f (nth x n))] (drop (inc n) x)))
 
+(typed/tc-ignore
 (defn xth
   "A lens from collection -> nth item."
   [n]
