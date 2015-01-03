@@ -109,26 +109,48 @@
   "A lens from sequence -> index/item pair."
   (lens index findexed)))
 
+(typed/defalias Nthable
+  (typed/TFn
+    [[a :variance :covariant]]
+    (typed/I (typed/Seqable a) typed/Sequential)))
+
 (typed/ann fnth
            (typed/All [a] [typed/AnyInteger
                            [a -> a]
-                           (typed/I (typed/Seqable a) typed/Sequential)
-                           -> (typed/Seqable a)]))
+                           (Nthable a)
+                           -> (Seq? a)]))
 (defn fnth [n f x]
-  (concat (take n x) [(f (nth x n))] (drop (inc n) x)))
+  (seq (concat (seq (take n x)) (seq [(f (nth x n))]) (seq (drop (inc n) x)))))
 
 (typed/tc-ignore
+(typed/ann xth (typed/All [a] [typed/AnyInteger -> (Lens (Nthable a) a)]))
 (defn xth
   "A lens from collection -> nth item."
   [n]
-  (lens (comp list #(nth % n)) (partial fnth n)))
+  (lens (comp seq list #(nth % n)) (partial fnth n))))
 
+(typed/ann clojure.core/update-in (typed/All [k v] [(clojure.lang.Associative k v) (typed/Seqable k) [v -> v]
+                                       -> (clojure.lang.Associative k v)]))
+(typed/ann fapply-in (typed/All [k v] [(typed/Seqable k) [v -> v] (clojure.lang.Associative k v)
+                                       -> (clojure.lang.Associative k v)]))
 (defn fapply-in [path f x] (update-in x path f))
 
+(typed/ann curried-fapply-in
+           (typed/All [k v] [(typed/Seqable k) ->
+                             [[v -> v] (clojure.lang.Associative k v) -> (clojure.lang.Associative k v)]]))
+(defn curried-fapply-in [path]
+  (fn [f x] (fapply-in path f x)))
+
+(typed/tc-ignore
+(typed/ann gets-in (typed/All [k v] [(typed/Seqable k) -> [(clojure.lang.Associative k v) -> (Seq? v)]]))
+(defn gets-in [path]
+  (fn [x] (seq (list (get-in x path)))))
+
+(typed/ann in (typed/All [k] [(typed/Seqable k) -> (Lens (clojure.lang.Associative k typed/Nothing) typed/Nothing)]))
 (defn in
   "A lens from map -> value at path."
   [path]
-  (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))
+  (lens (gets-in path) (curried-fapply-in path)))
 
 (defn combine
   "Combine two lenses to form a new lens."
