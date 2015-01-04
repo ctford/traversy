@@ -68,7 +68,7 @@
 
 (fact "The 'maybe' lens focuses only on foci that are present."
   (-> {:foo 1} (view (*> (in [:foo]) maybe))) => [1]
-  (-> {:foo 1} (view (*> (in [:bar]) maybe))) => []
+  (-> {:foo 1} (view (*> (in [:bar]) maybe))) => (seq [])
   (-> {:foo 1} (view (*> (+> (in [:foo]) (in [:bar])) maybe))) => [1])
 
 (fact "The 'only' lens focuses on the items in a sequence matching a condition."

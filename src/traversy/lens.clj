@@ -146,14 +146,19 @@
   [path]
   (lens (gets-in path) (curried-fapply-in path)))
 
-(typed/tc-ignore
+(typed/ann combine (typed/All [a b c] [(Lens a b) (Lens b c) -> (Lens a c)]))
 (defn combine
   "Combine two lenses to form a new lens."
   [outer inner]
   (lens
-    (fn [x] (mapcat #(view % inner) (view x outer)))
-    (fn [f x] (update x outer #(update % inner f)))))
+    (typed/ann-form
+      (fn [x] (seq (mapcat (typed/ann-form #(view % inner) [b -> (Seq? c)]) (view x outer))))
+      [a -> (Seq? c)])
+    (typed/ann-form
+      (fn [f x] (update x outer (typed/ann-form #(update % inner f) [b -> b])))
+      [[c -> c] a -> a])))
 
+(typed/tc-ignore
 (defn *>
   "Combine lenses to form a new lens."
   [& lenses]
