@@ -59,7 +59,9 @@
 (typed/ann it (typed/All [a] (Lens a a)))
 (def it
   "The identity lens (under 'combine')."
-  (lens listify fapply)))
+  (lens listify fapply))
+
+)
 
 (typed/ann fconst (typed/All [a b] (Fmap a b)))
 (defn fconst [f x] x)
@@ -67,11 +69,10 @@
 (typed/ann emptify (typed/All [a b] (Focus a b)))
 (defn emptify [_] (seq []))
 
-(typed/tc-ignore
-(typed/ann nothing (typed/All [a b] (Lens a b)))
+(typed/ann nothing (Lens typed/Any typed/Any))
 (def nothing
   "The null lens. The identity under 'both'."
-  (lens emptify fconst)))
+  (lens emptify fconst))
 
 (typed/ann zero (typed/All [a] [(typed/Seqable a) -> (typed/Seqable a)]))
 (defn zero [x]
@@ -179,15 +180,21 @@
 
 (def maybe
   "A lens to an optional value."
-  (conditionally (complement nil?)))
-
+  (conditionally (complement nil?))))
+  
+(typed/ann both (typed/All [a b] [(Lens a b) (Lens a b) -> (Lens a b)]))
 (defn both
   "Combine two lenses in parallel to form a new lens."
   [one another]
   (lens
-    (fn [x] (concat (view x one) (view x another)))
-    (fn [f x] (-> x (update one f) (update another f)))))
+    (typed/ann-form
+     (fn [x] (seq (concat (view x one) (view x another))))
+      (Focus a b))
+    (typed/ann-form
+      (fn [f x] (-> x (update one f) (update another f)))
+      (Fmap a b))))
 
+(typed/tc-ignore
 (defn +>
   "Combine lenses in parallel to form a new lens."
   [& lenses]
