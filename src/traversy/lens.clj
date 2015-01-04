@@ -129,29 +129,24 @@
   [n]
   (lens (comp seq list #(nth % n)) (partial fnth n))))
 
-(typed/ann clojure.core/update-in (typed/All [k v] [(clojure.lang.Associative k v) (typed/Seqable k) [v -> v]
-                                       -> (clojure.lang.Associative k v)]))
-(typed/ann fapply-in (typed/All [k v] [(typed/Seqable k) [v -> v] (clojure.lang.Associative k v)
-                                       -> (clojure.lang.Associative k v)]))
-(defn fapply-in [path f x] (update-in x path f))
+(typed/ann fapply-in (typed/All [k] [(typed/Seqable k) [typed/Any -> typed/Any] (typed/HMap) -> (typed/HMap)]))
+(defn fapply-in [path f x] (assoc-in x path (f (get-in x path))))
 
-(typed/ann curried-fapply-in
-           (typed/All [k v] [(typed/Seqable k) ->
-                             [[v -> v] (clojure.lang.Associative k v) -> (clojure.lang.Associative k v)]]))
+(typed/ann curried-fapply-in (typed/All [k v] [(typed/Seqable k) -> [[typed/Any -> typed/Any] (typed/HMap) -> (typed/HMap)]]))
 (defn curried-fapply-in [path]
   (fn [f x] (fapply-in path f x)))
 
-(typed/tc-ignore
-(typed/ann gets-in (typed/All [k v] [(typed/Seqable k) -> [(clojure.lang.Associative k v) -> (Seq? v)]]))
+(typed/ann gets-in (typed/All [k v] [(typed/Seqable k) -> [(typed/HMap) -> (Seq? typed/Any)]]))
 (defn gets-in [path]
   (fn [x] (seq (list (get-in x path)))))
 
-(typed/ann in (typed/All [k] [(typed/Seqable k) -> (Lens (clojure.lang.Associative k typed/Nothing) typed/Nothing)]))
+(typed/ann in (typed/All [k] [(typed/Seqable k) -> (Lens (typed/HMap) typed/Any)]))
 (defn in
   "A lens from map -> value at path."
   [path]
   (lens (gets-in path) (curried-fapply-in path)))
 
+(typed/tc-ignore
 (defn combine
   "Combine two lenses to form a new lens."
   [outer inner]
