@@ -69,12 +69,16 @@
 (fact "The 'conditionally' lens focuses only on foci that match a condition."
   (-> 1 (sequence (conditionally odd?))) => [1]
   (-> 1 (sequence (conditionally even?))) => '()
-  (-> {:foo 1 :bar 2} (sequence (*> (+> (in [:foo]) (in [:bar])) (conditionally odd?)))) => [1])
+  (-> {:foo 1 :bar 2} (sequence (*> (+> (in [:foo]) (in [:bar])) (conditionally odd?)))) => [1]
+  (-> 1 (update (conditionally odd?) inc)) => 2
+  (-> 1 (update (conditionally even?) inc)) => 1)
 
 (fact "The 'maybe' lens focuses only on foci that are present."
   (-> {:foo 1} (sequence (*> (in [:foo]) maybe))) => [1]
   (-> {:foo 1} (sequence (*> (in [:bar]) maybe))) => '()
-  (-> {:foo 1} (sequence (*> (+> (in [:foo]) (in [:bar])) maybe))) => [1])
+  (-> {:foo 1} (sequence (*> (+> (in [:foo]) (in [:bar])) maybe))) => [1]
+  (-> 1 (update maybe inc)) => 2
+  (-> nil (update maybe inc)) => nil)
 
 (fact "The 'only' lens focuses on the items in a sequence matching a condition."
   (-> [1 2 3] (sequence (only even?))) => [2]
