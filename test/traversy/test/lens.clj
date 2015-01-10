@@ -8,7 +8,7 @@
   (-> 9 (update it inc)) => 10)
 
 (fact "The 'nothing' lens doesn't have a focus."
-  (-> 9 (view nothing)) => []
+  (-> 9 (view nothing)) => '()
   (-> 9 (update nothing inc)) => 9)
 
 (fact "Trying to 'view-single' a lens that doesn't have exactly one focus throws an error."
@@ -25,16 +25,19 @@
 
 (fact "The 'each' lens focuses on each item in a sequence."
   (-> [1 2 3] (view each)) => [1 2 3]
+  (-> [] (view each)) => '()
   (-> [1 2 3] (update each inc)) => #(and (= % [2 3 4]) vector?)
   (-> [1 2 3] seq (update each inc)) => #(and (= % [2 3 4]) seq?))
 
 (fact "The 'each' lens focuses on each element in a set."
   (-> #{1 2 3} (view each)) => (just #{1 2 3})
+  (-> #{} (view each)) => '()
   (-> #{1 2 3} (update each inc)) => #{2 3 4})
 
 (fact "The 'each' lens focuses on the entries of a map."
-  (-> {:foo 3 :bar 4} (view all-entries)) => (just #{[:foo 3] [:bar 4]})
-  (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
+  (-> {:foo 3 :bar 4} (view each)) => (just #{[:foo 3] [:bar 4]})
+  (-> {} (view each)) => '()
+  (-> {:foo 3 :bar 4} (update each (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
 
 (fact "The 'indexed' lens focuses on indexed pairs in a sequence."
   (-> [1 2 3] (view indexed)) => [[0 1] [1 2] [2 3]]
@@ -47,6 +50,7 @@
       
 (fact "The 'all-entries' lens focuses on the entries of a map."
   (-> {:foo 3 :bar 4} (view all-entries)) => (just #{[:foo 3] [:bar 4]})
+  (-> {} (view all-entries)) => '()
   (-> {:foo 3 :bar 4} (update all-entries (fn [[k v]] [v k]))) => {3 :foo 4 :bar})
 
 (fact "The 'all-values' lens focuses on the values of a map."
@@ -59,12 +63,12 @@
 
 (fact "The 'conditionally' lens focuses only on foci that match a condition."
   (-> 1 (view (conditionally odd?))) => [1]
-  (-> 1 (view (conditionally even?))) => []
+  (-> 1 (view (conditionally even?))) => '()
   (-> {:foo 1 :bar 2} (view (*> (+> (in [:foo]) (in [:bar])) (conditionally odd?)))) => [1])
 
 (fact "The 'maybe' lens focuses only on foci that are present."
   (-> {:foo 1} (view (*> (in [:foo]) maybe))) => [1]
-  (-> {:foo 1} (view (*> (in [:bar]) maybe))) => []
+  (-> {:foo 1} (view (*> (in [:bar]) maybe))) => '()
   (-> {:foo 1} (view (*> (+> (in [:foo]) (in [:bar])) maybe))) => [1])
 
 (fact "The 'only' lens focuses on the items in a sequence matching a condition."

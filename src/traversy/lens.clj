@@ -54,7 +54,7 @@
 
 (def each
   "A lens from collection -> item."
-  (lens seq map-conj))
+  (lens sequence map-conj))
 
 (def index (partial map vector (range)))
 (defn findexed [f x] (map (comp second f) (index x)))
