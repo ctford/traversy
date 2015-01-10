@@ -15,7 +15,8 @@
   [x lens]
   (let [[focus & _ :as foci] (view x lens)
         quantity (count foci)]
-    (assert (= 1 quantity) (format "Found %d foci." quantity))
+    (assert (= 1 quantity)
+            (format "Found %d foci, but expected exactly 1." quantity))
     focus))
 
 (defn update
