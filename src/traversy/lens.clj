@@ -29,10 +29,6 @@
   [x]
   (constantly x))
 
-(def delete-entry
-  "When supplied as the f to update an entry, deletes the foci of the lens."
-  (put nil))
-
 (defn fapply [f x] (f x))
 
 (def it

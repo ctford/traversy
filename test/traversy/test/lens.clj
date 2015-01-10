@@ -80,10 +80,6 @@
   (-> {:foo 3 :bar 4 :baz 5} (view (select-entries [:foo :bar]))) => (just #{[:foo 3] [:bar 4]})
   (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) (fn [[k v]] [v k]))) => {3 :foo 4 :bar :baz 5})
 
-(fact "The entries lenses support deletion."
-  (-> {:foo 3 :bar 4 :baz 5} (update (select-entries [:foo :bar]) delete-entry)) => {:baz 5}
-  (-> {:foo 3 :bar 4 :baz 5} (update all-entries delete-entry)) => {})
-
 (fact "put sets the value at all the foci of a lens."
   (-> [1 2 3] (update (only even?) (put 7))) => [1 7 3]
   (-> #{1 2 3} (update each (put 7))) => #{7}

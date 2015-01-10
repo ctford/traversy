@@ -100,12 +100,6 @@ Yes! In fact, they're degenerate
 Not entirely. Lenses with unstable foci like `only` violate sequential composition
 i.e. `(update x l (comp f2 f1))` is not always equivalent to `(update (update x l f1) l f2)`.
 
-## Can you use Lenses to filter?
-
-Only if you're working with maps, presently. Lenses interpret a `nil` returned from an update as a deletion.
-
-This also violates sequential composition.
-
 ## Will updates preserve the structure of the target?
 
 Yes. Whether you focus on a map, a set, a vector or a sequence, the structure of the target will remain

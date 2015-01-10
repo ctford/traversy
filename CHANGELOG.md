@@ -1,3 +1,8 @@
+0.3.0
+-----
+
+* Removed deletion on map.
+
 0.2.0
 -----
 
