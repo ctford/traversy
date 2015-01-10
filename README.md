@@ -114,7 +114,7 @@ the same after an update.
 ## Can I compose these Lenses with ordinary function composition?
 
 No. Unlike Haskell Lenses, these are not represented as functions. You can, however, use `combine`
-and the variadic `*>`.
+(variadic form `*>`) and `both` (variadic form `+>`) to compose lenses.
 
 ## How do I run the tests?
 
