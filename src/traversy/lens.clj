@@ -1,7 +1,7 @@
 (ns traversy.lens)
 
 (defn lens
-  "Construct a lens from a focus :: x -> seq and an fmap :: f x -> x."
+  "Construct a lens from a focus :: x -> sequence and an fmap :: f x -> x."
   [focus fmap]
   {:focus focus :fmap fmap})
 
