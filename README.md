@@ -81,7 +81,7 @@ We can now view all customer names using the `customers` traversal:
 
 # Usage
 
-See the [tests](test/traversy/test/lens.clj).
+See the [examples](test/traversy/test/lens.clj).
 
 # Laws
 
