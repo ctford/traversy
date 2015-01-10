@@ -79,7 +79,10 @@
   [n]
   (lens (comp list #(nth % n)) (partial fnth n)))
 
-(defn fapply-in [path f x] (update-in x path f))
+(defn fapply-in [path f x]
+  (if (not= (get-in x path ::not-found) ::not-found)
+    (update-in x path f)
+    x))
 
 (defn in
   "A lens from map -> value at path."

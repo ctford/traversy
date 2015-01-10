@@ -28,6 +28,9 @@
   (-> {:foo 1} (sequence (in [:foo]))) => [1]
   (-> {:foo 1} (update (in [:foo]) inc)) => {:foo 2})
 
+(fact "Unlike 'update-in', 'in' does nothing if the specified path does not exist."
+  (-> {} (update (in [:foo]) identity)) => {})
+
 (fact "The 'each' lens focuses on each item in a sequence."
   (-> [1 2 3] (sequence each)) => [1 2 3]
   (-> [] (sequence each)) => '()
