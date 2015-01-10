@@ -1,19 +1,24 @@
-(ns traversy.lens)
+(ns traversy.lens
+  (:refer-clojure :rename {sequence core-sequence update core-update}))
 
 (defn lens
-  "Construct a lens from a focus :: x -> sequence and an fmap :: f x -> x."
+  "Construct a lens from a sequence and a map function appropriate to this lens."
   [focus fmap]
   {:focus focus :fmap fmap})
 
-(defn view
-  "Return a seq of the lens' foci."
-  [x lens]
-  ((:focus lens) x))
+(defn sequence
+  "Return a sequence of the lens' foci.
 
-(defn view-single
+  Equivalent to clojure.core's 'sequence' when given a single argument."
+  ([x lens]
+   ((:focus lens) x))
+  ([x]
+   (core-sequence x)))
+
+(defn single
   "Return the sole focus, throwing an error if there are other or no foci."
   [x lens]
-  (let [[focus & _ :as foci] (view x lens)
+  (let [[focus & _ :as foci] (sequence x lens)
         quantity (count foci)]
     (assert (= 1 quantity)
             (format "Found %d foci, but expected exactly 1." quantity))
@@ -51,7 +56,7 @@
 
 (def each
   "A lens from collection -> item."
-  (lens sequence map-conj))
+  (lens core-sequence map-conj))
 
 (def index (partial map vector (range)))
 (defn findexed [f x] (map (comp second f) (index x)))
@@ -85,7 +90,7 @@
   "Combine two lenses to form a new lens."
   [outer inner]
   (lens
-    (fn [x] (mapcat #(view % inner) (view x outer)))
+    (fn [x] (mapcat #(sequence % inner) (sequence x outer)))
     (fn [f x] (update x outer #(update % inner f)))))
 
 (defn *>
@@ -114,7 +119,7 @@
   "Combine two lenses in parallel to form a new lens."
   [one another]
   (lens
-    (fn [x] (concat (view x one) (view x another)))
+    (fn [x] (concat (sequence x one) (sequence x another)))
     (fn [f x] (-> x (update one f) (update another f)))))
 
 (defn +>

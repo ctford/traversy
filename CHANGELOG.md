@@ -2,6 +2,7 @@
 -----
 
 * Removed deletion on map.
+* Rename `view` to `sequence` and `view-single` to `single`.
 
 0.2.0
 -----
