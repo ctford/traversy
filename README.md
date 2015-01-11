@@ -123,15 +123,19 @@ We can now view all customer names using the `customers` traversal:
 
 ## Laws
 
-Lenses follow some rules that make them behave intuitively.
+Lenses follow some rules that make them behave intuitively. The first two rules are the [Traversal Laws](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html#t:Traversal).
+The final rule governs the relationship between `update` and `view`.
 
-An `update` has no effect if passed the `identity` function.
+An `update` has no effect if passed the `identity` function:
+
     (-> x (update l identity)) === x
 
-Fusing two updates together is the same as applying them separately.
+Fusing two updates together is the same as applying them separately:
+
     (-> x (update l f1) (update l f2)) === (-> (update l (comp f1 f2)))
 
-`update` then `view` is the same as `view` then `map`.
+`update` then `view` is the same as `view` then `map`:
+
     (-> x (update l f) (view l x)) === (->> x (view l) (map f))
 
 These should hold for any lens `l` that applies to a data structure `x`.
@@ -143,12 +147,9 @@ These two expressions should have the same value, but as incrementing an odd num
 the second update in the first example has no targets:
 * `(-> [1 2 3] (update (only odd?) inc) (update (only odd?) inc)) => [2 2 4]`
 * `(-> [1 2 3] (update (only odd?) (comp inc inc))) => [3 2 5]`
+
 Careful when doing this - and please document any lenses that have this behaviour as unstable. Traversy
 comes with three unstable lenses: `only`, `maybe` and `conditionally`.
-
-The first two rules are the [Traversal Laws](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html#t:Traversal).
-The final rule governs the relationship between `update` and `view`.
-
 
 ## Current version
 
