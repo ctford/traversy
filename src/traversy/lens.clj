@@ -1,4 +1,5 @@
-(ns traversy.lens)
+(ns traversy.lens
+  (:refer-clojure :exclude [update]))
 
 (defn lens
   "Construct a lens from a focus :: x -> sequence and an fmap :: f x -> x."

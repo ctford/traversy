@@ -1,4 +1,5 @@
 (ns traversy.test.lens
+  (:refer-clojure :exclude [update])
   (:require [midje.sweet :refer :all]
             [traversy.lens :refer :all]))
 
