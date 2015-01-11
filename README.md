@@ -153,7 +153,7 @@ comes with three unstable lenses: `only`, `maybe` and `conditionally`.
 
 ## Current version
 
-0.2.0 is on Clojars.
+0.3.0 is on Clojars.
 
 ## FAQs
 
