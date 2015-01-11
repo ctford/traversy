@@ -32,31 +32,31 @@
   [x]
   (constantly x))
 
-(defn fapply [f x] (f x))
+(defn ^:no-doc fapply [f x] (f x))
 
 (def it
   "The identity lens (under 'combine')."
   (lens list fapply))
 
-(defn fconst [f x] x)
+(defn ^:no-doc fconst [f x] x)
 
 (def nothing
   "The null lens. The identity under 'both'."
   (lens (constantly []) fconst))
 
-(defn zero [x]
+(defn ^:no-doc zero [x]
   (cond
     (map? x) {}
     (set? x) #{}
     :otherwise []))
 
-(defn map-conj [f x] (->> x (map f) (reduce conj (zero x))))
+(defn ^:no-doc map-conj [f x] (->> x (map f) (reduce conj (zero x))))
 
 (def each
   "A lens from collection -> item."
   (lens sequence map-conj))
 
-(def index (partial map vector (range)))
+(def ^:no-doc index (partial map vector (range)))
 (defn findexed [f x] (map (comp second f) (index x)))
 
 (defn by-key
@@ -69,7 +69,7 @@
   "A lens from sequence -> index/item pair."
   (lens index findexed))
 
-(defn fnth [n f x]
+(defn ^:no-doc fnth [n f x]
   (concat (take n x) [(f (nth x n))] (drop (inc n) x)))
 
 (defn xth
@@ -77,7 +77,7 @@
   [n]
   (lens (comp list #(nth % n)) (partial fnth n)))
 
-(defn fapply-in [path f x]
+(defn ^:no-doc fapply-in [path f x]
   (if (not= (get-in x path ::not-found) ::not-found)
     (update-in x path f)
     x))
@@ -99,7 +99,7 @@
   [& lenses]
   (reduce combine it lenses))
 
-(defn fwhen [applies? f x] (if (applies? x) (f x) x))
+(defn ^:no-doc fwhen [applies? f x] (if (applies? x) (f x) x))
 
 (defn conditionally
   "A lens to a conditional value."
