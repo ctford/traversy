@@ -153,7 +153,8 @@ comes with three unstable lenses: `only`, `maybe` and `conditionally`.
 
 ## Current version
 
-The latest version is on [Clojars](https://clojars.org/traversy):
+Binaries are on [Clojars](https://clojars.org/traversy):
+
 [![Clojars Project](http://clojars.org/traversy/latest-version.svg)](http://clojars.org/traversy)
 
 ## FAQs
