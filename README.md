@@ -4,12 +4,58 @@
 
 An experimental encoding of multilenses in Clojure.
 
-# Background
+## What are multilenses?
+
+Simply put, multilenses are generalisations of `sequence` and `update-in`. Traversy's `view` and `update`
+accept a lens that determines how values are extracted or updated.
+
+For example, there is no function for updating every value in a map in clojure.core. Here's how it looks
+with the `all-values` lens:
+
+`(require ['traversy.lens :refer :all])
+
+(-> {:x 2 :y 4} (update all-values inc))`
+
+This results in:
+
+`=> {:x 3 :y 5}`
+
+The same lens can also be used for viewing the foci:
+
+`(-> {:x 2 :y 4} (view all-values))`
+
+This results in:
+
+`[2 4]`
+
+Lenses can be easily composed, so it's easy to build one that suits your particular data structure:
+
+`(-> [{:x 1 :y 2} {:x 2 :y 7}] (update (*> each all-values) inc))`
+
+This results in:
+
+`[{:x 2 :y 3} {:x 3 :y 8}]`
+
+And as viewing also composes:
+
+`(-> [{:x 1 :y 2} {:x 2 :y 7}] (view (*> each all-values)))`
+
+This results in:
+
+`[1 2 2 7]`
+
+As lenses are first class, once you have one that suits your needs, you can name it and put it in a var.
+
+## Usage
+
+See the [examples](test/traversy/test/lens.clj).
+
+## Background
 
 At the 2014 Clojure eXchange [I gave a talk about Lenses in general, and Traversy
 specifically](https://skillsmatter.com/skillscasts/6034-journey-through-the-looking-glass).
 
-# Motivation
+## Motivation
 
 On a Clojure project, we discovered that changes to the structure of our domain models caused
 big waves throughout the codebase. The issue was that the entire structure of large domain objects was encoded
@@ -79,11 +125,7 @@ We can now view all customer names using the `customers` traversal:
 
     (-> bank (view (*> customers all-values (in [:name]))))
 
-# Usage
-
-See the [examples](test/traversy/test/lens.clj).
-
-# Laws
+## Laws
 
 Lenses follow some rules that make them behave intuitively:
 * `update` then `view` is the same as `view` then `map` - `(-> x (update l f) (view l x)) === (->> x (view l) (map f))`
@@ -100,33 +142,33 @@ Careful when doing this - and consider documenting any lenses that potentially h
 
 These rules are based on the [Traversal Laws](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html#t:Traversal).
 
-# Current version
+## Current version
 
 0.2.0 is on Clojars.
 
-# FAQs
+## FAQs
 
-## Aren't these just degenerate Lenses?
+### Aren't these just degenerate Lenses?
 
 Yes! In fact, they're degenerate
 [Traversals](http://hackage.haskell.org/package/lens-2.3/docs/Control-Lens-Traversal.html), with the `Foldable` and
 `Functor` instances and without the generality of traversing using arbitrary `Applicatives`.
 
 
-## Will updates preserve the structure of the target?
+### Will updates preserve the structure of the target?
 
 Yes. Whether you focus on a map, a set, a vector or a sequence, the structure of the target will remain
 the same after an update.
 
-## Can I compose these Lenses with ordinary function composition?
+### Can I compose these Lenses with ordinary function composition?
 
 No. Unlike Haskell Lenses, these are not represented as functions. You can, however, use `combine`
 (variadic form `*>`) and `both` (variadic form `+>`) to compose lenses.
 
-## How do I run the tests?
+### How do I run the tests?
 
 `lein midje`.
 
-## Is this stable enough to use in production?
+### Is this stable enough to use in production?
 
 Traversy is in production use on the project it originated from, but the API may yet change.
