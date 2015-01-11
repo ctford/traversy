@@ -2,7 +2,9 @@
   (:refer-clojure :exclude [update]))
 
 (defn lens
-  "Construct a lens from a focus :: x -> sequence and an fmap :: f x -> x."
+  "Construct a lens from a focus function and an fmap function:
+  (focus x) => a sequence of foci
+  (fmap f x) => an updated x"
   [focus fmap]
   {:focus focus :fmap fmap})
 
