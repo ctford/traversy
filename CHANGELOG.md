@@ -2,7 +2,6 @@
 -----
 
 * Removed deletion on map.
-* Rename `view` to `sequence` and `view-single` to `single`.
 * `in` does nothing if the path does not exist (unlike `update-in`).
 
 0.2.0
