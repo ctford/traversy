@@ -57,7 +57,7 @@
   (lens sequence map-conj))
 
 (def ^:no-doc index (partial map vector (range)))
-(defn findexed [f x] (map (comp second f) (index x)))
+(defn ^:no-doc findexed [f x] (map (comp second f) (index x)))
 
 (def indexed
   "A lens from sequence -> index/item pair."
