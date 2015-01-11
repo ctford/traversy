@@ -9,40 +9,34 @@ An experimental encoding of multilenses in Clojure.
 Simply put, multilenses are generalisations of `sequence` and `update-in`. Traversy's `view` and `update`
 accept a lens that determines how values are extracted or updated.
 
-For example, there is no function for updating every value in a map in clojure.core. Here's how it looks
-with the `all-values` lens:
+`update-in` provides a way to apply a function within a nested map:
 
-`(require ['traversy.lens :refer :all])
+    (-> {:x 2 :y 4} (update-in [:x] inc))
+    => {:x 3 :y 4}
+    
+This works great so long as the value you want to update can be addressed by a single path. However,
+there is no function for updating every value in a map in clojure.core. Here's how it looks with the
+`all-values` lens:
 
-(-> {:x 2 :y 4} (update all-values inc))`
-
-This results in:
-
-`=> {:x 3 :y 5}`
+    (require ['traversy.lens :refer :all])
+    
+    (-> {:x 2 :y 4} (update all-values inc))
+    => {:x 3 :y 5}
 
 The same lens can also be used for viewing the foci:
 
-`(-> {:x 2 :y 4} (view all-values))`
-
-This results in:
-
-`[2 4]`
+    (-> {:x 2 :y 4} (view all-values))
+    => (2 4)
 
 Lenses can be easily composed, so it's easy to build one that suits your particular data structure:
 
-`(-> [{:x 1 :y 2} {:x 2 :y 7}] (update (*> each all-values) inc))`
-
-This results in:
-
-`[{:x 2 :y 3} {:x 3 :y 8}]`
+    (-> [{:x 1 :y 2} {:x 2 :y 7}] (update (*> each all-values) inc))`
+    => ({:x 2 :y 3} {:x 3 :y 8})
 
 And as viewing also composes:
 
-`(-> [{:x 1 :y 2} {:x 2 :y 7}] (view (*> each all-values)))`
-
-This results in:
-
-`[1 2 2 7]`
+    (-> [{:x 1 :y 2} {:x 2 :y 7}] (view (*> each all-values)))
+    => (1 2 2 7)
 
 As lenses are first class, once you have one that suits your needs, you can name it and put it in a var.
 
