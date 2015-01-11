@@ -59,12 +59,6 @@
 (def ^:no-doc index (partial map vector (range)))
 (defn findexed [f x] (map (comp second f) (index x)))
 
-(defn by-key
-  "Update a key/value pair's value by looking up the key in 'associative',
-  leaving the pair intact if a corresponding value is not found."
-  [associative]
-  (fn [[k v]] [k (get associative k v)]))
-
 (def indexed
   "A lens from sequence -> index/item pair."
   (lens index findexed))
