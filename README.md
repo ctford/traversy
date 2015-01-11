@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/ctford/traversy.png)](https://travis-ci.org/ctford/traversy)
 
+[![Clojars Project](http://clojars.org/traversy/latest-version.svg)](http://clojars.org/traversy)
+
 An experimental encoding of multilenses in Clojure.
 
 ## What are multilenses?
@@ -98,12 +100,6 @@ the second update in the first example has no targets:
 
 Careful when doing this - and please document any lenses that have this behaviour as unstable. Traversy
 comes with three unstable lenses: `only`, `maybe` and `conditionally`.
-
-## Current version
-
-Binaries are on [Clojars](https://clojars.org/traversy):
-
-[![Clojars Project](http://clojars.org/traversy/latest-version.svg)](http://clojars.org/traversy)
 
 ## FAQs
 
