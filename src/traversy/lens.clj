@@ -96,18 +96,24 @@
 (defn ^:no-doc fwhen [applies? f x] (if (applies? x) (f x) x))
 
 (defn conditionally
-  "A lens to a conditional value."
+  "A lens to a conditional value, based on a predicate.
+
+  This lens is unstable if the predicate interacts with an update."
   [applies?]
   (lens (fn [x] (if (applies? x) [x] []))
         (partial fwhen applies?)))
 
 (defn only
-  "A lens from collection -> applicable items."
+  "A lens from collection -> applicable items, based on a predicate.
+
+  This lens is unstable if the predicate interacts with an update."
   [applies?]
   (*> each (conditionally applies?)))
 
 (def maybe
-  "A lens to an optional value."
+  "A lens to an optional value.
+
+  This lens is unstable if an update converts nil to another value. "
   (conditionally (complement nil?)))
 
 (defn both
