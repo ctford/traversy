@@ -11,32 +11,42 @@ accept a lens that determines how values are extracted or updated.
 
 `update-in` provides a way to apply a function within a nested map:
 
-    (-> {:x 2 :y 4} (update-in [:x] inc))
-    => {:x 3 :y 4}
-    
+```clojure
+(-> {:x 2 :y 4} (update-in [:x] inc))
+=> {:x 3 :y 4}
+ ```
+ 
 This works great so long as the value you want to update can be addressed by a single path. However,
 there is no function for updating every value in a map in clojure.core. Here's how it looks with the
 `all-values` lens:
 
-    (require ['traversy.lens :refer :all])
+```clojure
+(require ['traversy.lens :refer :all])
     
-    (-> {:x 2 :y 4} (update all-values inc))
-    => {:x 3 :y 5}
+(-> {:x 2 :y 4} (update all-values inc))
+=> {:x 3 :y 5}
+```
 
 The same lens can also be used for viewing the foci:
 
-    (-> {:x 2 :y 4} (view all-values))
-    => (2 4)
+```clojure
+(-> {:x 2 :y 4} (view all-values))
+=> (2 4)
+```
 
 Lenses can be easily composed, so it's easy to build one that suits your particular data structure:
 
-    (-> [{:x 1 :y 2} {:x 2 :y 7}] (update (*> each all-values) inc))`
-    => ({:x 2 :y 3} {:x 3 :y 8})
+```clojure
+(-> [{:x 1 :y 2} {:x 2 :y 7}] (update (*> each all-values) inc))`
+=> ({:x 2 :y 3} {:x 3 :y 8})
+```
 
 And as viewing also composes:
 
-    (-> [{:x 1 :y 2} {:x 2 :y 7}] (view (*> each all-values)))
-    => (1 2 2 7)
+```clojure
+(-> [{:x 1 :y 2} {:x 2 :y 7}] (view (*> each all-values)))
+=> (1 2 2 7)
+```
 
 As lenses are first class, once you have one that suits your needs, you can name it and put it in a var.
 
@@ -58,15 +68,21 @@ The final rule governs the relationship between `update` and `view`.
 
 An `update` has no effect if passed the `identity` function:
 
-    (-> x (update l identity)) === x
+```clojure
+(-> x (update l identity)) === x
+```
 
 Fusing two updates together is the same as applying them separately:
 
-    (-> x (update l f1) (update l f2)) === (-> (update l (comp f1 f2)))
+```clojure
+(-> x (update l f1) (update l f2)) === (-> (update l (comp f1 f2)))
+```
 
 `update` then `view` is the same as `view` then `map`:
 
-    (-> x (update l f) (view l x)) === (->> x (view l) (map f))
+```clojure
+(-> x (update l f) (view l x)) === (->> x (view l) (map f))
+```
 
 These should hold for any lens `l` that applies to a data structure `x`.
 
@@ -75,8 +91,10 @@ this is when `only` is used with a predicate and function that interact.
 
 These two expressions should have the same value, but as incrementing an odd number makes it even,
 the second update in the first example has no targets:
-* `(-> [1 2 3] (update (only odd?) inc) (update (only odd?) inc)) => [2 2 4]`
-* `(-> [1 2 3] (update (only odd?) (comp inc inc))) => [3 2 5]`
+```clojure
+(-> [1 2 3] (update (only odd?) inc) (update (only odd?) inc)) => [2 2 4]
+(-> [1 2 3] (update (only odd?) (comp inc inc))) => [3 2 5]
+```
 
 Careful when doing this - and please document any lenses that have this behaviour as unstable. Traversy
 comes with three unstable lenses: `only`, `maybe` and `conditionally`.
