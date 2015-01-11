@@ -1,4 +1,4 @@
-(defproject traversy "0.3.0"
+(defproject traversy "0.3.1-SNAPSHOT"
   :description "Multilenses for Clojure."
   :url "https://github.com/ctford/traversy"
   :license {:name "MIT"
