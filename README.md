@@ -122,7 +122,7 @@ You can, however, use `combine` (variadic form `*>`) and `both` (variadic form `
 
 ### How do I run the tests?
 
-`lein midje`.
+`lein midje`
 
 ### Is this stable enough to use in production?
 
