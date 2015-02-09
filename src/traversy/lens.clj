@@ -68,8 +68,10 @@
 
 (defn xth
   "A lens from collection -> nth item."
-  [n]
-  (lens (comp list #(nth % n)) (partial fnth n)))
+  ([n]
+   (lens (comp list #(nth % n)) (partial fnth n)))
+  ([n not-found]
+   (lens (comp list #(nth % n not-found)) (partial fnth n))))
 
 (defn ^:no-doc fapply-in [path f x]
   (if (not= (get-in x path ::not-found) ::not-found)
