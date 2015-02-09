@@ -91,7 +91,9 @@
 (fact "The 'xth' lens focuses on the nth item of a sequence."
   (-> [2 3 4] (view-single (xth 1))) => 3
   (-> [2 3 4] (view (xth 1))) => [3]
-  (-> [2 3 4] (update (xth 1) inc)) => [2 4 4])
+  (-> [2 3 4] (update (xth 1) inc)) => [2 4 4]
+  (-> [2 3 4] (view-single (xth 4 "not found"))) => "not found"
+  (-> [2 3 4] (view (xth 4 "not found"))) => ["not found"])
 
 (fact "We can 'combine' single-focus lenses."
   (-> {:foo {:bar 9}} (view-single (combine (in [:foo]) (in [:bar])))) => 9
