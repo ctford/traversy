@@ -22,7 +22,9 @@
 (fact "The 'in' lens focuses into a map based on a path."
   (-> {:foo 1} (view-single (in [:foo]))) => 1
   (-> {:foo 1} (view (in [:foo]))) => [1]
-  (-> {:foo 1} (update (in [:foo]) inc)) => {:foo 2})
+  (-> {:foo 1} (update (in [:foo]) inc)) => {:foo 2}
+  (-> {:foo 1} (view-single (in [:bar] "not-found"))) => "not-found"
+  (-> {:foo 1} (view-single (in [:bar]))) => nil)
 
 (fact "Unlike 'update-in', 'in' does nothing if the specified path does not exist."
   (-> {} (update (in [:foo]) identity)) => {})
