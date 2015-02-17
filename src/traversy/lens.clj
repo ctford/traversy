@@ -80,8 +80,10 @@
 
 (defn in
   "A lens from map -> value at path."
-  [path]
-  (lens (fn [x] (list (get-in x path))) (partial fapply-in path)))
+  ([path]
+   (in path nil))
+  ([path not-found]
+   (lens (fn [x] (list (get-in x path not-found))) (partial fapply-in path))))
 
 (defn combine
   "Combine two lenses to form a new lens."
