@@ -3,7 +3,7 @@
   :url "https://github.com/ctford/traversy"
   :license {:name "MIT"
             :url "http://opensource.org/licenses/MIT"}
-  :dependencies [[org.clojure/clojure "1.5.1"]]
+  :dependencies [[org.clojure/clojure "1.7.0"]]
   :profiles {:dev
              {:plugins [[lein-midje "3.1.3"]
                         [codox "0.8.10"]]
