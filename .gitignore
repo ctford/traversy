@@ -8,3 +8,6 @@ pom.xml.asc
 .lein-deps-sum
 .lein-repl-history
 .nrepl-port
+.idea
+*.iml
+*.lein-failures
