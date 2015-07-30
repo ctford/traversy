@@ -120,9 +120,17 @@ the same after an update.
 No. Unlike [Haskell Lenses](http://hackage.haskell.org/package/lens), these are not represented as functions.
 You can, however, use `combine` (variadic form `*>`) and `both` (variadic form `+>`) to compose lenses.
 
+### Can I use Traversy with ClojureScript?
+
+Yup!
+
 ### How do I run the tests?
 
-`lein midje`
+Clojure: `lein test-clj`
+
+ClojureScript: `lein test-cljs`
+
+both: `lein test-all`
 
 ### Is this stable enough to use in production?
 
