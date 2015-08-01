@@ -39,7 +39,7 @@ The same lens can also be used for viewing the foci:
 Lenses can be easily composed, so it's easy to build one that suits your particular data structure:
 
 ```clojure
-(-> [{:x 1 :y 2} {:x 2 :y 7}] (update (*> each all-values) inc))`
+(-> [{:x 1 :y 2} {:x 2 :y 7}] (update (*> each all-values) inc))
 => ({:x 2 :y 3} {:x 3 :y 8})
 ```
 
