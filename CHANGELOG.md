@@ -1,3 +1,7 @@
+0.3.1
+-----
+* `xth` accepts a default value if the index is out of bounds.
+
 0.3.0
 -----
 
