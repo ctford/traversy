@@ -128,7 +128,7 @@ Yup!
 
 Clojure: `lein test-clj`
 
-ClojureScript: `lein test-cljs`
+ClojureScript: `lein test-cljs` (you'll need phantomjs)
 
 both: `lein test-all`
 
