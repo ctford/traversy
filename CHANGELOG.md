@@ -1,3 +1,8 @@
+0.4.0
+-----
+* Support ClojureScript.
+* Upgrade to Clojure 1.7 to use reader conditionals in the tests.
+
 0.3.1
 -----
 * `xth` accepts a default value if the index is out of bounds.
