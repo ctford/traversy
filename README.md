@@ -77,7 +77,7 @@ An `update` has no effect if passed the `identity` function:
 Fusing two updates together is the same as applying them separately:
 
 ```clojure
-(-> x (update l f1) (update l f2)) === (-> (update l (comp f1 f2)))
+(-> x (update l f1) (update l f2)) === (-> (update l (comp f2 f1)))
 ```
 
 `update` then `view` is the same as `view` then `map`:
