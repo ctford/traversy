@@ -41,7 +41,7 @@
   (testing "The 'each' lens focuses on each item in a sequence."
     (is (= (-> [1 2 3] (view each)) [1 2 3]))
     (is (= (-> [] (view each)) '()))
-    (is (#(and (= % [2 3 4]) vector?) (-> [1 2 3] (update each inc))))
+    (is (#(and (= % [2 3 4]) (vector? %)) (-> [1 2 3] (update each inc))))
     (is (#(and (= % [2 3 4]) seq?) (-> [1 2 3] seq (update each inc)))))
 
   (testing "The 'each' lens focuses on each element in a set."
