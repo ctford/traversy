@@ -49,7 +49,7 @@
     (is (= (-> #{1 2 3} (update each inc) set) #{2 3 4})))
 
   (testing "The 'each' lens focuses on the entries of a map."
-    (is (= (-> {:foo 3 :bar 4} (view each) set #{[:foo 3] [:bar 4]})))
+    (is (= (-> {:foo 3 :bar 4} (view each) set) #{[:foo 3] [:bar 4]}))
     (is (= (-> {} (view each)) '()))
     (is (-> {:foo 3 :bar 4} (update each (fn [[k v]] [v k]))) {3 :foo 4 :bar})))
 
