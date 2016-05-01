@@ -30,9 +30,6 @@
             [[[:key :a]]])
           [[:key :a]]))))
 
-(defn lens= [data lens expected-value]
-  (= (l/view data lens) expected-value))
-
 (deftest test-gens-lens
   (testing "generating lens map"
         (let [lens-defs {:a "->a"
@@ -42,7 +39,7 @@
                     :b {:c "C"}
                     :c {:c1 ["C1" "C2"]}}
               lens-m (m/gen-lenses lens-defs string?)]
-          (are [lens-id expected-value] (lens= data (get lens-m lens-id) expected-value)
+          (are [lens-id expected-value] (= (l/view data (get lens-m lens-id)) expected-value)
                "->a"   ["A"]
                "->c"   ["C"]
                "->c11" ["C1"]
@@ -64,7 +61,7 @@
                 :d {:a {:x [1 2] :y "AY" :z "AZ"}
                     :b {:x [11 12] :y "BY" :z "BZ"}}
                 :e [{:p 123} {:p 456}]}]
-      (are [lens expected-value] (lens= data lens expected-value)
+      (are [lens expected-value] (= (l/view data lens) expected-value)
            ->a    ["A"]
            ->c    ["C"]
            ->c11  ["C1"]
