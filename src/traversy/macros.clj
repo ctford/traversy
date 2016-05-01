@@ -16,7 +16,7 @@
           (apply = heads) (first heads)
           (= (ffirst heads) :key) [:multi-key]
           (= (ffirst heads) :index) [:multi-index]
-          :else (throw (Exception. "Don't know what to do")))
+          :else (first heads))
         (cons (combine-paths (map rest paths)))))))
 
 (defn stage-to-lens [[type key]]
@@ -24,8 +24,7 @@
     :key (l/in [key])
     :index (l/xth key)
     :multi-key l/all-values
-    :multi-index l/each
-    (throw (Exception. (str "Unknown stage: " type)))))
+    :multi-index l/each))
 
 (defn path-to-lens [p]
   (->> p
