@@ -30,21 +30,6 @@
             [[[:key :a]]])
           [[:key :a]]))))
 
-(deftest test-gens-lens
-  (testing "generating lens map"
-        (let [lens-defs {:a "->a"
-                         :b {:c "->c"}
-                         :c {:c1 ["->c11" "->c12"]}}
-              data {:a "A"
-                    :b {:c "C"}
-                    :c {:c1 ["C1" "C2"]}}
-              lens-m (m/gen-lenses lens-defs string?)]
-          (are [lens-id expected-value] (= (l/view data (get lens-m lens-id)) expected-value)
-               "->a"   ["A"]
-               "->c"   ["C"]
-               "->c11" ["C1"]
-               "->c12" ["C2"]))))
-
 (m/deflenses {:a ->a
               :b {:c ->c}
               :c {:c1 [->c11 ->c12]}

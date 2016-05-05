@@ -16,25 +16,25 @@
           (apply = heads) (first heads)
           (= (ffirst heads) :key) [:multi-key]
           (= (ffirst heads) :index) [:multi-index]
-          :else (first heads))
+          :else (throw (Exception. "Don't know what to do")))
         (cons (combine-paths (map rest paths)))))))
 
-(defn stage-to-lens [[type key]]
+(defn stage-to-lens-aot [[type key]]
   (case type
-    :key (l/in [key])
-    :index (l/xth key)
-    :multi-key l/all-values
-    :multi-index l/each))
+    :key `(traversy.lens/in [~key])
+    :index `(traversy.lens/xth ~key)
+    :multi-key 'traversy.lens/all-values
+    :multi-index 'traversy.lens/each))
 
-(defn path-to-lens [p]
-  (->> p
-       drop-last
-       (map stage-to-lens)
-       (apply l/*>)))
+(defn path-to-lens-aot [p]
+  (let [lenses (->> p
+                    drop-last
+                    (map stage-to-lens-aot))]
+    `(traversy.lens/*> ~@lenses)))
 
 (defn convert-path-group-to-lens-entry [[k v]]
   [(second k)
-   (-> v combine-paths path-to-lens)])
+   (-> v combine-paths path-to-lens-aot)])
 
 (defn gen-lenses [m id?]
   (->> (get-paths m id?)
