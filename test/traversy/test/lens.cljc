@@ -4,8 +4,9 @@
                                    indexed all-entries all-values all-keys select-entries
                                    conditionally put xth combine both *> +> maybe]]
     ;; NB cljs doesn't support :refer :all
-            #?(:clj [clojure.test :refer [deftest is testing]]
-               :cljs [cemerick.cljs.test :as t]))
+    #?(:clj
+            [clojure.test :refer [deftest is testing]]
+       :cljs [cemerick.cljs.test :as t]))
   #?(:cljs (:require-macros [cemerick.cljs.test :refer [deftest is testing]])))
 
 (deftest test-it
@@ -29,11 +30,14 @@
 
 (deftest test-in
   (testing "The 'in' lens focuses into a map based on a path."
+    (is (= (-> {} (view (in [:foo]))) []))
+    (is (= (-> {} (update (in [:foo]) str)) {}))
     (is (= (-> {:foo 1} (view-single (in [:foo]))) 1))
     (is (= (-> {:foo 1} (view (in [:foo]))) [1]))
     (is (= (-> {:foo 1} (update (in [:foo]) inc)) {:foo 2}))
+    (is (= (-> {:foo nil} (update (in [:foo]) str) {:foo ""})))
     (is (= (-> {:foo 1} (view-single (in [:bar] "not-found"))) "not-found"))
-    (is (= (-> {:foo 1} (view-single (in [:bar]))) nil)))
+    (is (thrown? #?(:clj AssertionError :cljs js/Error) (-> {:foo 1} (view-single (in [:bar]))))))
   (testing "Unlike 'update-in', 'in' does nothing if the specified path does not exist."
     (is (= (-> {} (update (in [:foo]) identity)) {}))))
 
@@ -86,6 +90,7 @@
   (testing "The 'maybe' lens focuses only on foci that are present."
     (is (= (-> {:foo 1} (view (*> (in [:foo]) maybe))) [1]))
     (is (= (-> {:foo 1} (view (*> (in [:bar]) maybe))) '()))
+    (is (= (-> {} (view (*> (in [:bar]) maybe))) '()))
     (is (= (-> {:foo 1} (view (*> (+> (in [:foo]) (in [:bar])) maybe))) [1]))
     (is (= (-> 1 (update maybe inc)) 2))
     (is (nil? (-> nil (update maybe inc))))))

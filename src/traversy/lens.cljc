@@ -78,12 +78,18 @@
     (update-in x path f)
     x))
 
+(defn ^:no-doc focus-in [path not-found x]
+  (let [v (get-in x path not-found)]
+    (if (= v ::not-found)
+      (list)
+      (list v))))
+
 (defn in
   "A lens from map -> value at path."
   ([path]
-   (in path nil))
+   (in path ::not-found))
   ([path not-found]
-   (lens (fn [x] (list (get-in x path not-found))) (partial fapply-in path))))
+   (lens (partial focus-in path not-found) (partial fapply-in path))))
 
 (defn combine
   "Combine two lenses to form a new lens."
