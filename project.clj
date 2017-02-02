@@ -1,4 +1,4 @@
-(defproject traversy "0.4.0"
+(defproject traversy "0.5.0"
             :description "Multilenses for Clojure."
             :url "https://github.com/ctford/traversy"
             :min-lein-version "2.1.2"
