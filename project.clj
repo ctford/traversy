@@ -9,7 +9,8 @@
             :profiles {:dev {:plugins    [[com.jakemccrary/lein-test-refresh "0.10.0"]
                                           [codox "0.8.10"]
                                           [lein-cljsbuild "1.1.4"]
-                                          [lein-doo "0.1.7"]]}}
+                                          [lein-doo "0.1.7"]]
+                             :dependencies [[smidjen "0.2.1"]]}}
             :codox {:src-dir-uri "http://github.com/ctford/traversy/blob/0.3.0/"}
             :cljsbuild {:builds        {:test {:source-paths ["src" "test"]
                                                :compiler     {:output-to     "target/cljs/testable.js"
