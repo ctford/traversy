@@ -126,7 +126,7 @@ Yup!
 
 ### How do I run the tests?
 
-Clojure: `lein test-clj`
+Clojure: `lein test`
 
 ClojureScript: `lein test-cljs` (you'll need phantomjs)
 
