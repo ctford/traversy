@@ -4,10 +4,8 @@
                                    indexed all-entries all-values all-keys select-entries
                                    conditionally put xth combine both *> +> maybe]]
     ;; NB cljs doesn't support :refer :all
-    #?(:clj
-            [clojure.test :refer [deftest is testing]]
-       :cljs [cemerick.cljs.test :as t]))
-  #?(:cljs (:require-macros [cemerick.cljs.test :refer [deftest is testing]])))
+    #?(:clj [clojure.test :refer [deftest is testing]]
+       :cljs [cljs.test :refer-macros [deftest is testing]])))
 
 (deftest test-it
   (testing "The 'it' lens is the identity."
