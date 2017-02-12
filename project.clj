@@ -16,7 +16,7 @@
                                                :compiler     {:output-to     "target/cljs/testable.js"
                                                               :main          traversy.test-runner
                                                               :optimizations :whitespace}}}}
-            :aliases {"test-cljs" ["doo" "phantom" "test" "once"]
+            :aliases {"test-clj" ["test"]
+                      "test-cljs" ["doo" "phantom" "test" "once"]
                       "auto-cljs" ["doo" "phantom" "test" "auto"]
-                      "test-all" ["do" "test," "test-cljs"]}
-            )
+                      "test-all" ["do" "test-clj," "test-cljs"]})
