@@ -45,10 +45,7 @@
   (lens (constantly []) fconst))
 
 (defn ^:no-doc zero [x]
-  (cond
-    (map? x) {}
-    (set? x) #{}
-    :otherwise []))
+  (or (empty x) []))
 
 (defn ^:no-doc map-conj [f x] (->> x (map f) (reduce conj (zero x))))
 
