@@ -1,3 +1,7 @@
+0.5.0
+-----
+* 'in' distinguishes between absence of value (empty list returned) and nil value (nil returned)
+
 0.4.0
 -----
 * Support ClojureScript.
