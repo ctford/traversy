@@ -1,3 +1,7 @@
+0.5.1
+-----
+* Mark `org.clojure/clojure` and `org.clojure/clojurescript` as provided dependencies so ClojureScript and its own dependencies won't get pulled into pure Clojure projects
+
 0.5.0
 -----
 * 'in' distinguishes between absence of value (empty list returned) and nil value (nil returned)

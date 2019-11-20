@@ -1,11 +1,11 @@
-(defproject traversy "0.5.0"
+(defproject traversy "0.5.1"
             :description "Multilenses for Clojure."
             :url "https://github.com/ctford/traversy"
             :min-lein-version "2.1.2"
             :license {:name "MIT"
                       :url  "http://opensource.org/licenses/MIT"}
-            :dependencies [[org.clojure/clojure "1.8.0"]
-                           [org.clojure/clojurescript "1.9.229"]]
+            :dependencies [[org.clojure/clojure "1.8.0" :scope "provided"]
+                           [org.clojure/clojurescript "1.9.229" :scope "provided"]]
             :profiles {:dev {:plugins    [[com.jakemccrary/lein-test-refresh "0.10.0"]
                                           [codox "0.8.10"]
                                           [lein-cljsbuild "1.1.4"]
