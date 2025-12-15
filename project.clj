@@ -16,7 +16,7 @@
                                                :compiler     {:output-to     "target/cljs/testable.js"
                                                               :main          traversy.test-runner
                                                               :target        :nodejs
-                                                              :optimizations :whitespace}}}}
+                                                              :optimizations :none}}}}
             :aliases {"test-clj" ["test" "traversy.test.lens"] ;; Travis version of lein doesn't support reader conditionals yet
                       "test-cljs" ["doo" "node" "test" "once"]
                       "auto-cljs" ["doo" "node" "test" "auto"]
