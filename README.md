@@ -1,6 +1,6 @@
 # Traversy
 
-[![Build Status](https://travis-ci.org/ctford/traversy.png)](https://travis-ci.org/ctford/traversy)
+[![CI](https://github.com/ctford/traversy/workflows/CI/badge.svg)](https://github.com/ctford/traversy/actions)
 
 [![Clojars Project](http://clojars.org/traversy/latest-version.svg)](http://clojars.org/traversy)
 
