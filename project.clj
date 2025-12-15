@@ -17,6 +17,6 @@
                                                               :main          traversy.test-runner
                                                               :optimizations :whitespace}}}}
             :aliases {"test-clj" ["test" "traversy.test.lens"] ;; Travis version of lein doesn't support reader conditionals yet
-                      "test-cljs" ["doo" "phantom" "test" "once"]
-                      "auto-cljs" ["doo" "phantom" "test" "auto"]
+                      "test-cljs" ["doo" "node" "test" "once"]
+                      "auto-cljs" ["doo" "node" "test" "auto"]
                       "test-all" ["do" "test-clj," "test-cljs"]})
