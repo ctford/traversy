@@ -15,6 +15,7 @@
             :cljsbuild {:builds        {:test {:source-paths ["src" "test"]
                                                :compiler     {:output-to     "target/cljs/testable.js"
                                                               :main          traversy.test-runner
+                                                              :target        :nodejs
                                                               :optimizations :whitespace}}}}
             :aliases {"test-clj" ["test" "traversy.test.lens"] ;; Travis version of lein doesn't support reader conditionals yet
                       "test-cljs" ["doo" "node" "test" "once"]
